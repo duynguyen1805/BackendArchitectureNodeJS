@@ -115,8 +115,6 @@ class AccessService {
         const privateKey = crypto.randomBytes(64).toString("hex");
         const publicKey = crypto.randomBytes(64).toString("hex");
 
-        console.log("check 2keys: ", privateKey, publicKey);
-
         // publicKeyString ::V2
         const keyStore = await KeyTokenService.createKeyToken({
           userId: newUser._id,
