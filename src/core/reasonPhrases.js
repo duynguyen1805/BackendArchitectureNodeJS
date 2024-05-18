@@ -22,7 +22,7 @@ module.exports = {
    *
    * This response is sent when a request conflicts with the current state of the server.
    */
-  CONFLICT: "Conflict",
+  CONFLICT: "Conflict Error",
   /**
    * Official Documentation @ https://tools.ietf.org/html/rfc7231#section-6.2.1
    *

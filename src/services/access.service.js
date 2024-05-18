@@ -11,10 +11,7 @@ const { createTokenPair } = require("../auth/authUtils");
 
 const { getInfoData } = require("../utils/index");
 
-const {
-  BadRequestError,
-  ConflictRequestError,
-} = require("../core/error.response");
+const errResponse = require("../core/error.response");
 
 const check_exist_phonenumber = async (number) => {
   return new Promise(async (resolve, reject) => {
@@ -57,7 +54,6 @@ const hashUserPassword = (pwd) => {
 class AccessService {
   static signUp = async (data_body) => {
     const { name, phonenumber, password, gender, birthday, role } = data_body;
-    // try {
     // check phonenumber exists
     let existphone = await check_exist_phonenumber(phonenumber);
     if (existphone === true) {
@@ -67,14 +63,16 @@ class AccessService {
       // };
 
       // handle error
-      throw new BadRequestError("Error: phonenumber already exists");
+      throw new errResponse.BadRequestError(
+        "Error: phonenumber already exists"
+      );
     } else {
       // process hashPassword
       let hashPasswordfromBcrypt = await hashUserPassword(password);
       if (hashPasswordfromBcrypt && hashPasswordfromBcrypt.code == 0) {
         data_body.password = hashPasswordfromBcrypt.hashpwd;
       } else {
-        return { code: 400, message: "hash pwd error" };
+        throw new errResponse.InternalServerError("hash password error");
       }
       // create user
       const newUser = await userSchema.create({
@@ -127,10 +125,7 @@ class AccessService {
         });
 
         if (!keyStore) {
-          return {
-            code: 400,
-            message: "Error creating keyStore",
-          };
+          throw new errResponse.InternalServerError("Error creating keyStore");
         }
         // console.log("check keyStore: ", keyStore);
 
@@ -141,7 +136,6 @@ class AccessService {
         );
 
         return {
-          code: 200,
           metadata: {
             user: getInfoData({
               fileds: ["_id", "name", "phonenumber"],
@@ -151,21 +145,9 @@ class AccessService {
           },
         };
       } else {
-        return {
-          code: 500,
-          metadata: null,
-          message: "Lưu vào DB lỗi. Lỗi connect DB. ",
-        };
+        throw new errResponse.InternalServerError("Error Creating New User");
       }
     }
-    // }
-    // catch (error) {
-    //   return {
-    //     code: "xxx",
-    //     message: error.message,
-    //     status: "error",
-    //   };
-    // }
   };
 }
 
