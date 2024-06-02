@@ -20,6 +20,13 @@ class AccessController {
       metadata: await AccessService.signUp(req.body),
     }).send(res);
   };
+
+  login = async (req, res, next) => {
+    new successResponse.OK({
+      message: "Đăng nhập thành công",
+      metadata: await AccessService.login(req.body),
+    }).send(res);
+  };
 }
 
 module.exports = new AccessController();

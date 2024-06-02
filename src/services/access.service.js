@@ -6,12 +6,16 @@ const salt = bcrypt.genSaltSync(10);
 const crypto = require("node:crypto");
 
 const { ROLE } = require("../../constant");
-const KeyTokenService = require("./keyToken.service");
+
 const { createTokenPair } = require("../auth/authUtils");
 
 const { getInfoData } = require("../utils/index");
 
 const errResponse = require("../core/error.response");
+
+// SERVICE
+const KeyTokenService = require("./keyToken.service");
+const { findByPhonenumber } = require("../services/user.service");
 
 const check_exist_phonenumber = async (number) => {
   return new Promise(async (resolve, reject) => {
@@ -52,8 +56,8 @@ const hashUserPassword = (pwd) => {
 };
 
 class AccessService {
-  static signUp = async (data_body) => {
-    const { name, phonenumber, password, gender, birthday, role } = data_body;
+  static signUp = async (data_signup) => {
+    const { name, phonenumber, password, gender, birthday, role } = data_signup;
     // check phonenumber exists
     let existphone = await check_exist_phonenumber(phonenumber);
     if (existphone === true) {
@@ -70,13 +74,13 @@ class AccessService {
       // process hashPassword
       let hashPasswordfromBcrypt = await hashUserPassword(password);
       if (hashPasswordfromBcrypt && hashPasswordfromBcrypt.code == 0) {
-        data_body.password = hashPasswordfromBcrypt.hashpwd;
+        data_signup.password = hashPasswordfromBcrypt.hashpwd;
       } else {
         throw new errResponse.InternalServerError("hash password error");
       }
       // create user
       const newUser = await userSchema.create({
-        ...data_body,
+        ...data_signup,
         role: role ? role : ROLE.USER,
       });
 
@@ -146,6 +150,71 @@ class AccessService {
         throw new errResponse.InternalServerError("Error Creating New User");
       }
     }
+  };
+
+  /* 
+   1 - check phonenumber
+   2 - match password
+   3 - create access token & refresh token
+   4 - generate tokens
+   5 - getdata return login
+  */
+  static login = async (data_login) => {
+    const { phonenumber, password, refreshToken = null } = data_login;
+
+    // 1.
+    const foundUser = await findByPhonenumber({ phonenumber });
+    if (!foundUser) {
+      throw new errResponse.BadRequestError("Phonenumber not registered");
+    }
+
+    // 2.
+    const matchPassword = await bcrypt.compare(password, foundUser.password);
+    if (!matchPassword) {
+      throw new errResponse.UnauthorizedError(
+        "Authentication error - failed compare pwd"
+      );
+    }
+
+    // 3.
+    const privateKey = crypto.randomBytes(64).toString("hex");
+    const publicKey = crypto.randomBytes(64).toString("hex");
+
+    // 4.
+    const tokens = await createTokenPair(
+      { userId: foundUser._id },
+      publicKey,
+      privateKey
+    );
+
+    await KeyTokenService.createKeyToken({
+      userId: foundUser._id,
+      publicKey: publicKey,
+      privateKey: privateKey,
+      refreshToken: tokens.refreshToken,
+    });
+
+    // 5.
+    return {
+      metadata: {
+        user: getInfoData({
+          fileds: [
+            "_id",
+            "name",
+            "phonenumber",
+            "email",
+            "gender",
+            "birthday",
+            "avatar",
+            "status",
+            "role",
+            "verify",
+          ],
+          object: foundUser,
+        }),
+        tokens: tokens,
+      },
+    };
   };
 }
 

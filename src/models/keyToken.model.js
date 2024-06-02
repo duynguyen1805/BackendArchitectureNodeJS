@@ -23,6 +23,11 @@ var keyTokenSchema = new mongoose.Schema(
       required: true,
     },
     refreshToken: {
+      type: String,
+      required: true,
+    },
+    // RT đã được sử dụng
+    refreshTokensUsed: {
       type: Array,
       default: [],
     },
