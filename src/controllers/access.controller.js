@@ -27,6 +27,13 @@ class AccessController {
       metadata: await AccessService.login(req.body),
     }).send(res);
   };
+
+  logout = async (req, res, next) => {
+    new successResponse.OK({
+      message: "Đăng xuất thành công",
+      metadata: await AccessService.logout(req.keyStore),
+    }).send(res);
+  };
 }
 
 module.exports = new AccessController();

@@ -1,6 +1,7 @@
 "use strict";
 
 const keyTokenModel = require("../models/keyToken.model");
+const { Types } = require("mongoose");
 
 // tao token luu vao db
 
@@ -58,7 +59,28 @@ class KeyTokenService {
     }
   };
 
-  // LEVEL 1
+  static findKey_ByUserId = async (userId) => {
+    const objKey = await keyTokenModel
+      .findOne({ user: new Types.ObjectId(userId) })
+      .lean();
+    return objKey;
+  };
+
+  static deleteKey_ById = async (id_keyStore) => {
+    const objKey = await keyTokenModel
+      .findOneAndDelete({ _id: new Types.ObjectId(id_keyStore) })
+      .lean();
+    return {
+      _id_keyStore: objKey._id,
+      user: objKey.user,
+    };
+  };
+  // static deleteKey_ById = async ({ id }) => {
+  //   const result = await keyTokenModel.deleteOne({
+  //     _id: new Types.ObjectId(id),
+  //   });
+  //   return result;
+  // };
 }
 
 module.exports = KeyTokenService;

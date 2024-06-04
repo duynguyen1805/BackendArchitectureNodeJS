@@ -216,6 +216,16 @@ class AccessService {
       },
     };
   };
+
+  /* */
+  static logout = async (keyStore) => {
+    const del_KeyStore = await KeyTokenService.deleteKey_ById(keyStore._id);
+    /*
+    console.log("check delKeyStore: ", del_KeyStore);
+    => { acknowledged: true, deletedCount: 1 }
+    */
+    return del_KeyStore;
+  };
 }
 
 module.exports = AccessService;

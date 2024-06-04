@@ -7,7 +7,7 @@ const findByPhonenumber = async ({
   select = {
     name: 1,
     phonenumber: 1,
-    // password: 0, không thể có 0 và 1 trong 1 obj select
+    password: 1,
     email: 1,
     gender: 1,
     birthday: 1,

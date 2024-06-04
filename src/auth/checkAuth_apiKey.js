@@ -31,7 +31,7 @@ const check_apiKey = async (req, res, next) => {
   }
 };
 
-// check permissions
+// check permissions apiKey
 const checkPermissions_apiKey = (permission) => {
   return (req, res, next) => {
     if (!req.objKey.permissions) {
@@ -52,14 +52,7 @@ const checkPermissions_apiKey = (permission) => {
   };
 };
 
-const asyncHandler = (fn) => {
-  return (req, res, next) => {
-    fn(req, res, next).catch(next);
-  };
-};
-
 module.exports = {
   check_apiKey,
   checkPermissions_apiKey,
-  asyncHandler,
 };
