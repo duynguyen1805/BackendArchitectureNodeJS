@@ -75,7 +75,13 @@ const authentication = asyncHandler(async (req, res, next) => {
   }
 });
 
+/** props token có thể là >> [accessToken, refreshToken] */
+const verifyJWT = async (token, keySecret) => {
+  return await JWT.verify(token, keySecret);
+};
+
 module.exports = {
   createTokenPair,
   authentication,
+  verifyJWT,
 };

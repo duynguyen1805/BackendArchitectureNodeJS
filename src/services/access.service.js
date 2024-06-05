@@ -7,7 +7,7 @@ const crypto = require("node:crypto");
 
 const { ROLE } = require("../../constant");
 
-const { createTokenPair } = require("../auth/authUtils");
+const { createTokenPair, verifyJWT } = require("../auth/authUtils");
 
 const { getInfoData } = require("../utils/index");
 
@@ -56,6 +56,73 @@ const hashUserPassword = (pwd) => {
 };
 
 class AccessService {
+  /* 
+   1 - check token da su dung
+   Mục đích: sử dụng để tạo 1CẶP refresh và access token mới
+  */
+  static handlerRefreshToken = async (refreshToken) => {
+    const found_Token = await KeyTokenService.find_ByRefreshTokenUsed(
+      refreshToken
+    );
+    // nếu refreshtoken đã sử dụng rồi >>> đặt nghi vấn
+    if (found_Token) {
+      // decode check thông tin >> payload >>> { userId }
+      const { userId, phonenumber } = await verifyJWT(
+        refreshToken,
+        found_Token.privateKey
+      );
+      console.log(
+        "Thong tin user từ refreshToken bị nghi vấn: ",
+        userId,
+        phonenumber
+      );
+      // xóa tất cả token trong keyStore by userId
+      await KeyTokenService.deletekeyStore_byuserId(userId);
+      throw new errResponse.ForbiddenError("Something wrong! Please relogin");
+    }
+
+    // handle nếu refresh token sử dụng lần đầu tiên (refresh login hiện tại)
+    const holderToken = await KeyTokenService.find_ByRefreshToken(refreshToken);
+    // chưa có holderToken >> chưa login
+    if (!holderToken) {
+      throw new errResponse.UnauthorizedError(
+        "Invalid refresh token - User not login yet"
+      );
+    }
+    // có holderToken >> verify refreshToken bằng privateKey trong DB.
+    const { userId, phonenumber } = await verifyJWT(
+      refreshToken,
+      holderToken.privateKey
+    );
+    // console.log("Thong tin user từ refreshToken: ", userId, phonenumber);
+    // check user exists
+    const foundUser = await findByPhonenumber({ phonenumber });
+    if (!foundUser) {
+      throw new errResponse.UnauthorizedError("User not found");
+    }
+
+    // tạo cặp token mới (access & refresh) và add refreshToken hiện tại vào refreshTokensUsed
+    const tokens = await createTokenPair(
+      { userId: foundUser._id, phonenumber: foundUser.phonenumber },
+      holderToken.publicKey,
+      holderToken.privateKey
+    );
+    // update cặp token mới
+    await holderToken.updateOne({
+      $set: {
+        refreshToken: tokens.refreshToken,
+      },
+      $addToSet: {
+        refreshTokensUsed: refreshToken, // RT đã sử dụng để lấy token mới rồi
+      },
+    });
+
+    return {
+      user: { userId, phonenumber },
+      tokens,
+    };
+  };
+
   static signUp = async (data_signup) => {
     const { name, phonenumber, password, gender, birthday, role } = data_signup;
     // check phonenumber exists
@@ -132,7 +199,7 @@ class AccessService {
         // console.log("check keyStore: ", keyStore);
 
         const tokens = await createTokenPair(
-          { userId: newUser._id },
+          { userId: newUser._id, phonenumber: newUser.phonenumber },
           publicKey,
           privateKey
         );
@@ -182,7 +249,7 @@ class AccessService {
 
     // 4.
     const tokens = await createTokenPair(
-      { userId: foundUser._id },
+      { userId: foundUser._id, phonenumber: foundUser.phonenumber },
       publicKey,
       privateKey
     );

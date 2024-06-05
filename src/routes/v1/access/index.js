@@ -19,5 +19,9 @@ router.use(authentication);
 
 // route need authentication
 router.get("/logout", asyncHandler(AccessController.logout));
+router.post(
+  "/handlerRefreshToken",
+  asyncHandler(AccessController.handlerRefreshToken)
+);
 
 module.exports = router;

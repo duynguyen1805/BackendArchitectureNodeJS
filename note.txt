@@ -1,2 +1,10 @@
 status req: 
 missing para => status: 400, errCode: 1
+
+/**
+    workflow Authentication hiện tại
+    - signup => create publicKey and privateKey => save to collection keyStore
+    - login => create public&privateKey, refreshToken => save to collection keyStore và accessToken
+    - logout => delete collection keyStore
+    - handlerRefreshToken => RT đã sử dụng thì xóa keyStore => relogin, chưa sử dụng thì cấp lại cặp access và refresh token mới
+*/

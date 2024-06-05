@@ -4,6 +4,13 @@ const AccessService = require("../services/access.service");
 const successResponse = require("../core/success.response");
 
 class AccessController {
+  handlerRefreshToken = async (req, res, next) => {
+    new successResponse.OK({
+      message: "Lấy accessToken mới thành công",
+      metadata: await AccessService.handlerRefreshToken(req.body.refreshToken),
+    }).send(res);
+  };
+
   signUp = async (req, res, next) => {
     // try {
     //   // console.log("[P]::signUp:: ", req.body);

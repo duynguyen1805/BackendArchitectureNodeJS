@@ -81,6 +81,28 @@ class KeyTokenService {
   //   });
   //   return result;
   // };
+
+  static find_ByRefreshTokenUsed = async (refreshToken) => {
+    const objKey = await keyTokenModel
+      .findOne({
+        refreshTokensUsed: refreshToken,
+      })
+      .lean();
+    return objKey;
+  };
+
+  static deletekeyStore_byuserId = async (userId) => {
+    return await keyTokenModel.findOneAndDelete({
+      user: new Types.ObjectId(userId),
+    });
+  };
+
+  static find_ByRefreshToken = async (refreshToken) => {
+    const objKey = await keyTokenModel.findOne({
+      refreshToken: refreshToken,
+    });
+    return objKey;
+  };
 }
 
 module.exports = KeyTokenService;
