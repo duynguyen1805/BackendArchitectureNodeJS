@@ -60,9 +60,9 @@ class KeyTokenService {
   };
 
   static findKey_ByUserId = async (userId) => {
-    const objKey = await keyTokenModel
-      .findOne({ user: new Types.ObjectId(userId) })
-      .lean();
+    const objKey = await keyTokenModel.findOne({
+      user: new Types.ObjectId(userId),
+    });
     return objKey;
   };
 

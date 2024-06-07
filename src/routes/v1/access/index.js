@@ -2,7 +2,10 @@ var express = require("express");
 var router = express.Router();
 const AccessController = require("../../../controllers/access.controller");
 const { asyncHandler } = require("../../../helpers/asyncHandler");
-const { authentication } = require("../../../auth/authUtils");
+const {
+  authentication,
+  authentication_Ver2,
+} = require("../../../auth/authUtils");
 
 // type HEADER = {
 //   API_KEY: "x-api-key",
@@ -15,7 +18,7 @@ router.post("/signup", asyncHandler(AccessController.signUp));
 router.post("/login", asyncHandler(AccessController.login));
 
 // authentication
-router.use(authentication);
+router.use(authentication_Ver2);
 
 // route need authentication
 router.get("/logout", asyncHandler(AccessController.logout));

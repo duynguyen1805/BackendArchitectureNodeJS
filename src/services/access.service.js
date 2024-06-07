@@ -123,6 +123,54 @@ class AccessService {
     };
   };
 
+  static handlerRefreshToken_Ver2 = async ({
+    refreshToken,
+    user,
+    keyStore,
+  }) => {
+    const { userId, phonenumber } = user;
+    // check nếu refreshtoken đã sử dụng rồi >>> đặt nghi vấn
+    if (keyStore.refreshTokensUsed.includes(refreshToken)) {
+      // xóa tất cả token trong keyStore by userId
+      await KeyTokenService.deletekeyStore_byuserId(userId);
+      throw new errResponse.ForbiddenError("Something wrong! Please relogin");
+    }
+
+    // handle nếu refresh token sử dụng lần đầu tiên (refresh login hiện tại)
+    if (keyStore.refreshToken !== refreshToken) {
+      throw new errResponse.UnauthorizedError(
+        "Invalid refresh token - User not login yet"
+      );
+    }
+
+    // check nếu RT có tồn tại >> check user nào ?
+    const foundUser = await findByPhonenumber({ phonenumber });
+    // check user exists
+    if (!foundUser) {
+      throw new errResponse.UnauthorizedError("User not found");
+    }
+    // tạo cặp token mới (access & refresh) và add refreshToken hiện tại vào refreshTokensUsed
+    const tokens = await createTokenPair(
+      { userId: foundUser._id, phonenumber: foundUser.phonenumber },
+      keyStore.publicKey,
+      keyStore.privateKey
+    );
+    // update cặp token mới
+    await keyStore.updateOne({
+      $set: {
+        refreshToken: tokens.refreshToken,
+      },
+      $addToSet: {
+        refreshTokensUsed: refreshToken, // RT đã sử dụng để lấy token mới rồi
+      },
+    });
+
+    return {
+      user,
+      tokens,
+    };
+  };
+
   static signUp = async (data_signup) => {
     const { name, phonenumber, password, gender, birthday, role } = data_signup;
     // check phonenumber exists

@@ -2,7 +2,10 @@ var express = require("express");
 var router = express.Router();
 const ProductController = require("../../../controllers/product.controller");
 const { asyncHandler } = require("../../../helpers/asyncHandler");
-const { authentication } = require("../../../auth/authUtils");
+const {
+  authentication,
+  authentication_Ver2,
+} = require("../../../auth/authUtils");
 
 // type HEADER = {
 //   API_KEY: "x-api-key",
@@ -11,7 +14,7 @@ const { authentication } = require("../../../auth/authUtils");
 // };
 
 // authentication
-router.use(authentication);
+router.use(authentication_Ver2);
 
 // route need authentication
 router.post("/create", asyncHandler(ProductController.createProduct));
