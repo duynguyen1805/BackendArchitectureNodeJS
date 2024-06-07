@@ -11,5 +11,6 @@ const {
 // router.use(checkPermissions_apiKey("0000"));
 
 router.use("/v1/api", require("./v1/access/index.js"));
+router.use("/v1/api/product", require("./v1/product/index.js"));
 
 module.exports = router;

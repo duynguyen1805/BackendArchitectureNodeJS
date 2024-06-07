@@ -1,56 +1,102 @@
 "use strict";
 const mongoose = require("mongoose"); // Erase if already required
 
+const collection_name = "Products";
+const document_name = "Product";
+
 // Declare the Schema of the Mongo model
-var productSchema = new mongoose.Schema(
+const productSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      index: true,
-    },
-    code: {
-      type: String,
-      required: true,
-      unique: true,
-      index: true,
-    },
-    type: {
+    product_name: {
       type: String,
       required: true,
     },
-    brand: {
+    product_thumbnail: {
       type: String,
-      require: false,
+      required: true,
     },
-    images: { type: Array, required: true, default: [] },
-    price: {
+    product_price: {
       type: Number,
       required: true,
     },
-    discount: {
-      type: Number,
-      required: false,
-    },
-    description: {
+    product_description: {
       type: String,
       required: true,
     },
-    release_date: {
-      type: Date,
-      required: false,
+    product_quantity: {
+      type: Number,
+      required: true,
     },
-    properties: {
-      type: Array,
-      required: false,
-      default: [],
+    product_type: {
+      type: String,
+      required: true,
+      enum: ["Electronics", "Clothing", "Furniture"],
+    },
+    product_shop: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    product_attributes: {
+      type: mongoose.Schema.Types.Mixed,
+      required: true,
     },
   },
   {
-    collections: "Products",
+    collections: collection_name,
+    timestamps: true,
+  }
+);
+
+// define the product type = "Electronics", "Clothing", "Furniture"
+const clothingSchema = new mongoose.Schema(
+  {
+    brand: {
+      type: String,
+      required: true,
+    },
+    size: String,
+    material: String,
+    product_shop: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  },
+  {
+    collection: "Clothes",
+    timestamps: true,
+  }
+);
+
+const electronicSchema = new mongoose.Schema(
+  {
+    manufacturer: {
+      type: String,
+      required: true,
+    },
+    model: String,
+    color: String,
+    product_shop: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  },
+  {
+    collection: "Electronics",
+    timestamps: true,
+  }
+);
+
+const furnitureSchema = new mongoose.Schema(
+  {
+    brand: {
+      type: String,
+      required: true,
+    },
+    size: String,
+    material: String,
+    product_shop: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  },
+  {
+    collection: "Furniture",
     timestamps: true,
   }
 );
 
 //Export the model
-module.exports = mongoose.model("Products", productSchema);
+module.exports = {
+  ProductSchema: mongoose.model(document_name, productSchema),
+  ClothingSchema: mongoose.model("Clothing", clothingSchema),
+  ElectronicSchema: mongoose.model("Electronic", electronicSchema),
+  FurnitureSchema: mongoose.model("Furniture", furnitureSchema),
+};

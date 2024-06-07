@@ -69,6 +69,7 @@ const authentication = asyncHandler(async (req, res, next) => {
     }
 
     req.keyStore = keyStore;
+    req.user = decodeUser; // { userId, phonenumber }
     return next();
   } catch (error) {
     throw error;
