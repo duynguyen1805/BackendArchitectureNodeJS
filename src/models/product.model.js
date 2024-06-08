@@ -1,5 +1,6 @@
 "use strict";
 const mongoose = require("mongoose"); // Erase if already required
+const slugify = require("slugify");
 
 const collection_name = "Products";
 const document_name = "Product";
@@ -8,6 +9,7 @@ const document_name = "Product";
 const productSchema = new mongoose.Schema(
   {
     product_name: {
+      // quan jean nam cao cap
       type: String,
       required: true,
     },
@@ -23,6 +25,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    product_slug: String, // quan-jean-nam-cao-cap
     product_quantity: {
       type: Number,
       required: true,
@@ -37,12 +40,34 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
       required: true,
     },
+    // MORE
+    product_ratingsAverage: {
+      type: Number,
+      default: 4.5,
+      min: [1, "Rating must be above 1.0"],
+      max: [5, "Rating must be below 5.0"],
+      // làm tròn
+      set: (val) => Math.round(val * 10) / 10,
+    },
+    product_variations: {
+      type: Array,
+      default: [],
+    },
+    // isDraft: { type: Boolean, default: true, index: true, select: false },
+    isDraft: { type: Boolean, default: true, index: true },
+    isPublished: { type: Boolean, default: false, index: true },
   },
   {
     collections: collection_name,
     timestamps: true,
   }
 );
+
+// DOCUMENT MIDDLEWARE: runs before .save() and .create()
+productSchema.pre("save", function (next) {
+  this.product_slug = slugify(this.product_name, { lower: true });
+  next();
+});
 
 // define the product type = "Electronics", "Clothing", "Furniture"
 const clothingSchema = new mongoose.Schema(
