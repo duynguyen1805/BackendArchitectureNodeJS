@@ -30,7 +30,7 @@ const productSchema = new mongoose.Schema(
     product_type: {
       type: String,
       required: true,
-      enum: ["Electronics", "Clothing", "Furniture"],
+      // enum: ["Electronic", "Clothing", "Furniture"],
     },
     product_shop: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     product_attributes: {

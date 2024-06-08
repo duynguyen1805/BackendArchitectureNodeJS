@@ -1,4 +1,7 @@
 "use strict";
+/* 
+    Api Service Product kết hợp giữa Factory và Strategy
+*/
 
 const {
   ProductSchema,
@@ -8,23 +11,36 @@ const {
 } = require("../models/product.model");
 const errResponse = require("../core/error.response");
 
+const config_service_product = require("../services/product.service.v2.config");
+
 /**
  type: "Electronic", "Clothing", "Furniture"
  payload:
  */
 // define Factory class to create product
 class ProductFactory {
+  static productRegistry = {}; // key-class
+
+  static registerProductType(type, classRef) {
+    ProductFactory.productRegistry[type] = classRef;
+  }
+
   static async CreateProduct(type, payload) {
-    switch (type) {
-      case "Clothing":
-        return new Clothing(payload).CreateProduct();
-      case "Electronic":
-        return new Electronic(payload).CreateProduct();
-      case "Furniture":
-        return new Furniture(payload).CreateProduct();
-      default:
-        throw new errResponse.BadRequest(`Invalid product type: ${type}`);
-    }
+    const productClass = ProductFactory.productRegistry[type];
+    if (!productClass)
+      throw new errResponse.BadRequest(`Invalid product type: ${type}`);
+    return new productClass(payload).CreateProduct();
+
+    // switch (type) {
+    //   case "Clothing":
+    //     return new Clothing(payload).CreateProduct();
+    //   case "Electronic":
+    //     return new Electronic(payload).CreateProduct();
+    //   case "Furniture":
+    //     return new Furniture(payload).CreateProduct();
+    //   default:
+    //     throw new errResponse.BadRequest(`Invalid product type: ${type}`);
+    // }
   }
 }
 
@@ -124,5 +140,14 @@ class Furniture extends Product {
     return newProduct;
   }
 }
+
+// register product type
+ProductFactory.registerProductType("Clothing", Clothing);
+ProductFactory.registerProductType("Electronic", Electronic);
+ProductFactory.registerProductType("Furniture", Furniture);
+
+// config_service_product.map(({ type, classRef }) => {
+//   ProductFactory.registerProductType(type, classRef);
+// });
 
 module.exports = ProductFactory;
