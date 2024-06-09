@@ -34,5 +34,9 @@ router.put(
   "/publish/:product_id",
   asyncHandler(ProductController.publish_Product_ByShop)
 );
+router.put(
+  "/unpublish/:product_id",
+  asyncHandler(ProductController.unPublish_Product_ByShop)
+);
 
 module.exports = router;

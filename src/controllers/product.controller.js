@@ -60,6 +60,16 @@ class ProductController {
       }),
     }).send(res);
   };
+
+  unPublish_Product_ByShop = async (req, res, next) => {
+    new SuccessResponse.OK({
+      message: "Unpublish product successfully",
+      metadata: await ProductService_V2.unPublish_Product_ByShop({
+        product_shop: req.user.userId,
+        product_id: req.params.product_id,
+      }),
+    }).send(res);
+  };
 }
 
 module.exports = new ProductController();

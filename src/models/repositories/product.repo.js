@@ -39,8 +39,20 @@ const publish_Product_ByShop = async ({ product_shop, product_id }) => {
   );
 };
 
+const unPublish_Product_ByShop = async ({ product_shop, product_id }) => {
+  return await ProductSchema.findOneAndUpdate(
+    {
+      _id: new Types.ObjectId(product_id),
+      product_shop: new Types.ObjectId(product_shop),
+    },
+    { isPublished: false, isDraft: true },
+    { new: true } // return new product after update
+  );
+};
+
 module.exports = {
   findAll_DraftsProduct_ByShop,
   publish_Product_ByShop,
   findAll_PublishedProduct_ByShop,
+  unPublish_Product_ByShop,
 };

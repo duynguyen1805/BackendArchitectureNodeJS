@@ -17,6 +17,7 @@ const {
   findAll_DraftsProduct_ByShop,
   publish_Product_ByShop,
   findAll_PublishedProduct_ByShop,
+  unPublish_Product_ByShop,
 } = require("../models/repositories/product.repo");
 
 /**
@@ -61,6 +62,9 @@ class ProductFactory {
   // PUT
   static async publish_Product_ByShop({ product_shop, product_id }) {
     return await publish_Product_ByShop({ product_shop, product_id });
+  }
+  static async unPublish_Product_ByShop({ product_shop, product_id }) {
+    return await unPublish_Product_ByShop({ product_shop, product_id });
   }
   // END PUT
 }
