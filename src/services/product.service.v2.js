@@ -15,6 +15,8 @@ const config_service_product = require("../services/product.service.v2.config");
 
 const {
   findAll_DraftsProduct_ByShop,
+  publish_Product_ByShop,
+  findAll_PublishedProduct_ByShop,
 } = require("../models/repositories/product.repo");
 
 /**
@@ -34,20 +36,9 @@ class ProductFactory {
     if (!productClass)
       throw new errResponse.BadRequest(`Invalid product type: ${type}`);
     return new productClass(payload).CreateProduct();
-
-    // switch (type) {
-    //   case "Clothing":
-    //     return new Clothing(payload).CreateProduct();
-    //   case "Electronic":
-    //     return new Electronic(payload).CreateProduct();
-    //   case "Furniture":
-    //     return new Furniture(payload).CreateProduct();
-    //   default:
-    //     throw new errResponse.BadRequest(`Invalid product type: ${type}`);
-    // }
   }
 
-  // query product - get list of seller's draft products
+  // QUERY
   static async findAll_DraftsProduct_ByShop({
     product_shop,
     limit = 50,
@@ -56,6 +47,22 @@ class ProductFactory {
     const query = { product_shop, isDraft: true };
     return await findAll_DraftsProduct_ByShop({ query, limit, skip });
   }
+
+  static async findAll_PublishedProduct_ByShop({
+    product_shop,
+    limit = 50,
+    skip = 0,
+  }) {
+    const query = { product_shop, isPublished: true };
+    return await findAll_PublishedProduct_ByShop({ query, limit, skip });
+  }
+  // END QUERY
+
+  // PUT
+  static async publish_Product_ByShop({ product_shop, product_id }) {
+    return await publish_Product_ByShop({ product_shop, product_id });
+  }
+  // END PUT
 }
 
 // define base product class

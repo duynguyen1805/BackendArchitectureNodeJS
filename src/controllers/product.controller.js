@@ -41,6 +41,25 @@ class ProductController {
       }),
     }).send(res);
   };
+
+  findAll_PublishedProduct_ByShop = async (req, res, next) => {
+    new SuccessResponse.OK({
+      message: "Get list of published products successfully",
+      metadata: await ProductService_V2.findAll_PublishedProduct_ByShop({
+        product_shop: req.user.userId,
+      }),
+    }).send(res);
+  };
+
+  publish_Product_ByShop = async (req, res, next) => {
+    new SuccessResponse.OK({
+      message: "Publish product successfully",
+      metadata: await ProductService_V2.publish_Product_ByShop({
+        product_shop: req.user.userId,
+        product_id: req.params.product_id,
+      }),
+    }).send(res);
+  };
 }
 
 module.exports = new ProductController();
