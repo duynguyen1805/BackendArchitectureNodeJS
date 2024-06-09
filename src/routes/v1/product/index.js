@@ -19,4 +19,10 @@ router.use(authentication_Ver2);
 // route need authentication
 router.post("/create", asyncHandler(ProductController.createProduct));
 
+// query
+router.get(
+  "/drafts/all",
+  asyncHandler(ProductController.findAll_DraftsProduct_ByShop)
+);
+
 module.exports = router;

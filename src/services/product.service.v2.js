@@ -13,6 +13,10 @@ const errResponse = require("../core/error.response");
 
 const config_service_product = require("../services/product.service.v2.config");
 
+const {
+  findAll_DraftsProduct_ByShop,
+} = require("../models/repositories/product.repo");
+
 /**
  type: "Electronic", "Clothing", "Furniture"
  payload:
@@ -41,6 +45,16 @@ class ProductFactory {
     //   default:
     //     throw new errResponse.BadRequest(`Invalid product type: ${type}`);
     // }
+  }
+
+  // query product - get list of seller's draft products
+  static async findAll_DraftsProduct_ByShop({
+    product_shop,
+    limit = 50,
+    skip = 0,
+  }) {
+    const query = { product_shop, isDraft: true };
+    return await findAll_DraftsProduct_ByShop({ query, limit, skip });
   }
 }
 
