@@ -70,6 +70,15 @@ class ProductController {
       }),
     }).send(res);
   };
+
+  searchProducts_ByUser = async (req, res, next) => {
+    new SuccessResponse.OK({
+      message: "Search products successfully",
+      metadata: await ProductService_V2.searchProducts_ByUser({
+        keySearch: req.params.keySearch,
+      }),
+    }).send(res);
+  };
 }
 
 module.exports = new ProductController();

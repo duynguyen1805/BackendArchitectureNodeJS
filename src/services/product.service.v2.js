@@ -18,6 +18,7 @@ const {
   publish_Product_ByShop,
   findAll_PublishedProduct_ByShop,
   unPublish_Product_ByShop,
+  searchProducts_ByUser,
 } = require("../models/repositories/product.repo");
 
 /**
@@ -48,7 +49,6 @@ class ProductFactory {
     const query = { product_shop, isDraft: true };
     return await findAll_DraftsProduct_ByShop({ query, limit, skip });
   }
-
   static async findAll_PublishedProduct_ByShop({
     product_shop,
     limit = 50,
@@ -56,6 +56,9 @@ class ProductFactory {
   }) {
     const query = { product_shop, isPublished: true };
     return await findAll_PublishedProduct_ByShop({ query, limit, skip });
+  }
+  static async searchProducts_ByUser({ keySearch }) {
+    return await searchProducts_ByUser({ keySearch });
   }
   // END QUERY
 

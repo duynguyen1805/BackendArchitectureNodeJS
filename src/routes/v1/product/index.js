@@ -13,6 +13,12 @@ const {
 //   AUTHORIZATION: "authorization", => accessToken
 // };
 
+// router public
+router.get(
+  "/search/:keySearch",
+  asyncHandler(ProductController.searchProducts_ByUser)
+);
+
 // authentication
 router.use(authentication_Ver2);
 
