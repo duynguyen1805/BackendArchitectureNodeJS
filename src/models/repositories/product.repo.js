@@ -7,6 +7,7 @@ const {
   ElectronicSchema,
   FurnitureSchema,
 } = require("../product.model");
+const { getSelectData, unGetSelectData } = require("../../utils");
 
 const findAll_DraftsProduct_ByShop = async ({ query, limit, skip }) => {
   return await ProductSchema.find(query)
@@ -26,6 +27,26 @@ const findAll_PublishedProduct_ByShop = async ({ query, limit, skip }) => {
     .limit(limit)
     .lean()
     .exec();
+};
+
+const findAll_Products = async ({ limit, sort, page, filter, select }) => {
+  // public, product homepage, no search
+  const skip = (page - 1) * limit;
+  const sortBy = sort === "ctime" ? { _id: -1 } : { _id: 1 };
+  const products = await ProductSchema.find(filter)
+    .sort(sortBy)
+    .skip(skip)
+    .limit(limit)
+    .select(getSelectData(select)) // accept object => convert arr to object (utils)
+    .lean();
+
+  return products;
+};
+
+const find_DetailProduct = async ({ product_id, unSelect }) => {
+  return await ProductSchema.findById(product_id).select(
+    unGetSelectData(unSelect)
+  );
 };
 
 const publish_Product_ByShop = async ({ product_shop, product_id }) => {
@@ -71,4 +92,6 @@ module.exports = {
   findAll_PublishedProduct_ByShop,
   unPublish_Product_ByShop,
   searchProducts_ByUser,
+  findAll_Products,
+  find_DetailProduct,
 };

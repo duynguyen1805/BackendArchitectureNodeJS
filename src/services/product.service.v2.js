@@ -19,6 +19,8 @@ const {
   findAll_PublishedProduct_ByShop,
   unPublish_Product_ByShop,
   searchProducts_ByUser,
+  findAll_Products,
+  find_DetailProduct,
 } = require("../models/repositories/product.repo");
 
 /**
@@ -39,8 +41,14 @@ class ProductFactory {
       throw new errResponse.BadRequest(`Invalid product type: ${type}`);
     return new productClass(payload).CreateProduct();
   }
+  static async UpdateProduct(type, payload) {
+    const productClass = ProductFactory.productRegistry[type];
+    if (!productClass)
+      throw new errResponse.BadRequest(`Invalid product type: ${type}`);
+    return new productClass(payload).CreateProduct();
+  }
 
-  // QUERY
+  // --------------------------QUERY--------------------------
   static async findAll_DraftsProduct_ByShop({
     product_shop,
     limit = 50,
@@ -60,9 +68,27 @@ class ProductFactory {
   static async searchProducts_ByUser({ keySearch }) {
     return await searchProducts_ByUser({ keySearch });
   }
+  static async findAll_Products({
+    limit = 50,
+    sort = "ctime",
+    page = 1,
+    filter = { isPublished: true },
+    select = ["_id", "product_name", "product_thumbnail", "product_price"],
+  }) {
+    return await findAll_Products({
+      limit,
+      sort,
+      page,
+      filter,
+      select,
+    });
+  }
+  static async find_DetailProduct({ product_id, unSelect = ["__v"] }) {
+    return await find_DetailProduct({ product_id, unSelect });
+  }
   // END QUERY
 
-  // PUT
+  // ---------------------------PUT---------------------------
   static async publish_Product_ByShop({ product_shop, product_id }) {
     return await publish_Product_ByShop({ product_shop, product_id });
   }

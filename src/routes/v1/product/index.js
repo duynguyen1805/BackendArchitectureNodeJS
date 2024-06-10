@@ -18,6 +18,8 @@ router.get(
   "/search/:keySearch",
   asyncHandler(ProductController.searchProducts_ByUser)
 );
+router.post("/find_all", asyncHandler(ProductController.findAll_Products));
+router.get("/:product_id", asyncHandler(ProductController.find_DetailProduct));
 
 // authentication
 router.use(authentication_Ver2);

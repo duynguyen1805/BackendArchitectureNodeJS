@@ -79,6 +79,29 @@ class ProductController {
       }),
     }).send(res);
   };
+
+  findAll_Products = async (req, res, next) => {
+    new SuccessResponse.OK({
+      message: "Get list of products successfully",
+      metadata: await ProductService_V2.findAll_Products({
+        limit: req.body.limit,
+        sort: req.body.sort,
+        page: req.body.page,
+        filter: req.body.filter,
+        select: req.body.select,
+      }),
+    }).send(res);
+  };
+
+  find_DetailProduct = async (req, res, next) => {
+    new SuccessResponse.OK({
+      message: "Get detail product successfully",
+      metadata: await ProductService_V2.find_DetailProduct({
+        product_id: req.params.product_id,
+        // unSelect: req.body.unSelect,
+      }),
+    }).send(res);
+  };
 }
 
 module.exports = new ProductController();
