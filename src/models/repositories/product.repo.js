@@ -49,6 +49,15 @@ const find_DetailProduct = async ({ product_id, unSelect }) => {
   );
 };
 
+const update_ProductById = ({
+  product_id,
+  bodyUpdate,
+  model,
+  isNew = true,
+}) => {
+  return model.findByIdAndUpdate(product_id, bodyUpdate, { new: isNew });
+};
+
 const publish_Product_ByShop = async ({ product_shop, product_id }) => {
   return await ProductSchema.findOneAndUpdate(
     {
@@ -67,7 +76,10 @@ const unPublish_Product_ByShop = async ({ product_shop, product_id }) => {
       product_shop: new Types.ObjectId(product_shop),
     },
     { isPublished: false, isDraft: true },
-    { new: true } // return new product after update
+    {
+      new: true,
+      //overwrite: true, // đảm bảo thay thế toàn bộ tài liệu (chuẩn method PUT)
+    } // return new product after update
   );
 };
 
@@ -94,4 +106,5 @@ module.exports = {
   searchProducts_ByUser,
   findAll_Products,
   find_DetailProduct,
+  update_ProductById,
 };

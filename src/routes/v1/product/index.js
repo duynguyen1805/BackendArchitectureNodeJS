@@ -26,6 +26,7 @@ router.use(authentication_Ver2);
 
 // route need authentication
 router.post("/create", asyncHandler(ProductController.createProduct));
+router.patch("/:product_id", asyncHandler(ProductController.UpdateProduct));
 
 // QUERY
 router.get(

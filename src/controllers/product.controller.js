@@ -102,6 +102,20 @@ class ProductController {
       }),
     }).send(res);
   };
+
+  UpdateProduct = async (req, res, next) => {
+    new SuccessResponse.OK({
+      message: "Update product successfully",
+      metadata: await ProductService_V2.UpdateProduct(
+        req.body.product_type,
+        req.params.product_id,
+        {
+          ...req.body,
+          product_shop: req.user.userId,
+        }
+      ),
+    }).send(res);
+  };
 }
 
 module.exports = new ProductController();

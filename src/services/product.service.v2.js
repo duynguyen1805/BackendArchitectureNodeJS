@@ -14,6 +14,11 @@ const errResponse = require("../core/error.response");
 const config_service_product = require("../services/product.service.v2.config");
 
 const {
+  removeUndefinedNullObject,
+  updateNestedObjectParser,
+} = require("../utils/index");
+
+const {
   findAll_DraftsProduct_ByShop,
   publish_Product_ByShop,
   findAll_PublishedProduct_ByShop,
@@ -21,6 +26,7 @@ const {
   searchProducts_ByUser,
   findAll_Products,
   find_DetailProduct,
+  update_ProductById,
 } = require("../models/repositories/product.repo");
 
 /**
@@ -38,14 +44,14 @@ class ProductFactory {
   static async CreateProduct(type, payload) {
     const productClass = ProductFactory.productRegistry[type];
     if (!productClass)
-      throw new errResponse.BadRequest(`Invalid product type: ${type}`);
+      throw new errResponse.BadRequestError(`Invalid product type: ${type}`);
     return new productClass(payload).CreateProduct();
   }
-  static async UpdateProduct(type, payload) {
+  static async UpdateProduct(type, product_id, payload) {
     const productClass = ProductFactory.productRegistry[type];
     if (!productClass)
-      throw new errResponse.BadRequest(`Invalid product type: ${type}`);
-    return new productClass(payload).CreateProduct();
+      throw new errResponse.BadRequestError(`Invalid product type: ${type}`);
+    return new productClass(payload).UpdateProduct(product_id);
   }
 
   // --------------------------QUERY--------------------------
@@ -136,6 +142,15 @@ class Product {
   async CreateProduct(product_id) {
     return await ProductSchema.create({ ...this, _id: product_id });
   }
+
+  // update new product - product_id === _id object attributes
+  async UpdateProduct({ product_id, bodyUpdate }) {
+    return await update_ProductById({
+      product_id,
+      bodyUpdate,
+      model: ProductSchema,
+    });
+  }
 }
 
 // define sub-class for diferent product type "Clothing"
@@ -146,14 +161,40 @@ class Clothing extends Product {
       product_shop: this.product_shop,
     });
     if (!newClothing) {
-      throw new errResponse.BadRequest("Create new Clothing error");
+      throw new errResponse.BadRequestError("Create new Clothing error");
     }
     // thành công newClothing - tạo product chung _id với newClothing
     const newProduct = await super.CreateProduct(newClothing._id);
     if (!newProduct)
-      throw new errResponse.BadRequest("Create new Product error");
+      throw new errResponse.BadRequestError("Create new Product error");
 
     return newProduct;
+  }
+
+  async UpdateProduct(product_id) {
+    /**
+     * check update o dau? children hay Products
+     * remove attribute has null or undefined >> không update field đó
+     * removeUndefinedNullObject >> it WORK nhưng collection Products cha lưu product_attributes bị mất fields nào bị null or undefined
+     * giải pháp >> updateNestedObjectParser
+     */
+
+    const objectParams = removeUndefinedNullObject(this);
+    if (objectParams.product_attributes) {
+      // update children
+      await update_ProductById({
+        product_id,
+        bodyUpdate: updateNestedObjectParser(objectParams.product_attributes),
+        model: ClothingSchema,
+      });
+    }
+
+    const updateProduct = await super.UpdateProduct({
+      product_id,
+      bodyUpdate: updateNestedObjectParser(objectParams),
+    });
+
+    return updateProduct;
   }
 }
 
@@ -165,14 +206,33 @@ class Electronic extends Product {
       product_shop: this.product_shop,
     });
     if (!newElectronic) {
-      throw new errResponse.BadRequest("Create new Electronic error");
+      throw new errResponse.BadRequestError("Create new Electronic error");
     }
     // thành công newElectronic - tạo product chung _id với newElectronic
     const newProduct = await super.CreateProduct(newElectronic._id);
     if (!newProduct)
-      throw new errResponse.BadRequest("Create new Product error");
+      throw new errResponse.BadRequestError("Create new Product error");
 
     return newProduct;
+  }
+
+  async UpdateProduct(product_id) {
+    const objectParams = removeUndefinedNullObject(this);
+    if (objectParams.product_attributes) {
+      // update children
+      await update_ProductById({
+        product_id,
+        bodyUpdate: updateNestedObjectParser(objectParams.product_attributes),
+        model: ElectronicSchema,
+      });
+    }
+
+    const updateProduct = await super.UpdateProduct({
+      product_id,
+      bodyUpdate: updateNestedObjectParser(objectParams),
+    });
+
+    return updateProduct;
   }
 }
 
@@ -184,14 +244,33 @@ class Furniture extends Product {
       product_shop: this.product_shop,
     });
     if (!newFurniture) {
-      throw new errResponse.BadRequest("Create new Furniture error");
+      throw new errResponse.BadRequestError("Create new Furniture error");
     }
     // thành công newFurniture - tạo product chung _id với newFurniture
     const newProduct = await super.CreateProduct(newFurniture._id);
     if (!newProduct)
-      throw new errResponse.BadRequest("Create new Product error");
+      throw new errResponse.BadRequestError("Create new Product error");
 
     return newProduct;
+  }
+
+  async UpdateProduct(product_id) {
+    const objectParams = removeUndefinedNullObject(this);
+    if (objectParams.product_attributes) {
+      // update children
+      await update_ProductById({
+        product_id,
+        bodyUpdate: updateNestedObjectParser(objectParams.product_attributes),
+        model: FurnitureSchema,
+      });
+    }
+
+    const updateProduct = await super.UpdateProduct({
+      product_id,
+      bodyUpdate: updateNestedObjectParser(objectParams),
+    });
+
+    return updateProduct;
   }
 }
 

@@ -28,4 +28,96 @@ const unGetSelectData = (unSelect = []) => {
   return Object.fromEntries(unSelect.map((el) => [el, 0]));
 };
 
-module.exports = { getInfoData, getSelectData, unGetSelectData };
+/**
+ * Removes all undefined and null values from an object recursively (nested level 1).
+ *
+ *
+ * @param {object} obj - The object to remove undefined and null values from.
+ * @return {object} - A new object with undefined and null values removed.
+ */
+// const removeUndefinedNullObject = (obj) => {
+//   Object.keys(obj).forEach((k) => {
+//     if (obj[k] == undefined || obj[k] == null) delete obj[k];
+//   });
+
+//   return obj;
+// };
+const removeUndefinedNullObject = (obj) => {
+  const result = {};
+
+  Object.keys(obj).forEach((k) => {
+    const current = obj[k];
+
+    if ([null, undefined].includes(current)) return;
+    if (Array.isArray(current)) return;
+
+    if (typeof current === "object") {
+      result[k] = removeUndefinedNullObject(current);
+      return;
+    }
+
+    result[k] = current;
+  });
+
+  return result;
+};
+/*
+  const a = {
+    b: {
+      c: 1,
+      d: 2,
+    }
+  }
+
+  db.collection.updateOne(
+    `b.c: 1`,
+    `b.d: 2`,
+  )
+*/
+const updateNestedObjectParser = (obj) => {
+  const final = {};
+  Object.keys(obj).forEach((k) => {
+    if (typeof obj[k] == "object" && !Array.isArray(obj[k])) {
+      const response = updateNestedObjectParser(obj[k]);
+      Object.keys(response || []).forEach((key) => {
+        final[`${k}.${key}`] = response[key];
+      });
+    } else {
+      final[k] = obj[k];
+    }
+  });
+
+  return final;
+};
+
+// const removeUndefinedNullObject_ALLLevel_Nested_ObjectParse = (obj) => {
+//   const result = {};
+
+//   Object.keys(obj).forEach((k) => {
+//     const current = obj[k];
+
+//     if ([null, undefined].includes(current)) return;
+//     if (Array.isArray(current)) {
+//       const filteredArray = current.filter(
+//         (item) => ![null, undefined].includes(item)
+//       );
+//       if (filteredArray.length > 0) result[k] = filteredArray;
+//     } else if (typeof current === "object") {
+//       const nestedObj = removeUndefinedNullObject(current);
+//       if (Object.keys(nestedObj).length > 0) result[k] = nestedObj;
+//     } else {
+//       result[k] = current;
+//     }
+//   });
+
+//   return result;
+// };
+
+module.exports = {
+  getInfoData,
+  getSelectData,
+  unGetSelectData,
+  removeUndefinedNullObject,
+  updateNestedObjectParser,
+  // removeUndefinedNullObject_ALLLevel_Nested_ObjectParse,
+};
