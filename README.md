@@ -31,13 +31,44 @@ Welcome to the E-commerce Platform Backend API project! This project aims to bui
 
 ## Features
 
-- **User Management**: User registration, authentication, and profile management.
-- **Shop Management**: Shop creation, updating, and management by users.
-- **Product Management**: Product listing, updating, and management within shops.
-- **Order Processing**: Handling customer orders, payments, and order status updates.
-- **Search and Filtering**: Advanced search and filtering options for products and shops.
-- **Review and Rating System**: Allow customers to review and rate products and shops.
-- **Notification System**: Real-time notifications for order updates, new messages, and other important events.
+- **User Authentication and Authorization**:
+
+  - Secure user registration and login using JWT.
+  - Role-based access control to distinguish between buyers and sellers.
+
+- **Shop Management**:
+
+  - CRUD operations for shop creation, updating, and deletion.
+  - Association of products with specific shops.
+
+- **Product Management**:
+
+  - CRUD operations for product listing, updating, and deletion.
+  - Handling product categories, tags, attributes, inventories, discount.
+
+- **Order Management**:
+
+  - Order placement, updating order status, and order history.
+  - Payment processing integration and order validation.
+
+- **Search and Filtering**:
+
+  - Full-text search capabilities for products and shops.
+  - Filtering based on categories, price range, ratings, etc.
+
+- **Review and Rating System**:
+
+  - CRUD operations for product and shop reviews.
+  - Aggregation of ratings and feedback.
+
+- **Notification System**:
+
+  - Real-time notifications for order updates, new messages, and other events.
+  - Email and push notification integration.
+
+- **Admin Panel**:
+  - Dashboard for managing users, shops, products, and orders.
+  - Monitoring and reporting tools for system health and performance.
 
 ## Tech Stack
 
