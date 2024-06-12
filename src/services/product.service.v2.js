@@ -28,6 +28,7 @@ const {
   find_DetailProduct,
   update_ProductById,
 } = require("../models/repositories/product.repo");
+const { insert_Inventory } = require("../models/repositories/inventory.repo");
 
 /**
  type: "Electronic", "Clothing", "Furniture"
@@ -140,7 +141,18 @@ class Product {
 
   // create new product - product_id === _id object attributes
   async CreateProduct(product_id) {
-    return await ProductSchema.create({ ...this, _id: product_id });
+    const newProduct = await ProductSchema.create({ ...this, _id: product_id });
+    if (newProduct) {
+      // add product_stock in inventories collection
+      await insert_Inventory({
+        product_id,
+        shopId: this.product_shop,
+        stock: this.product_quantity,
+        location: "unknow",
+      });
+    }
+
+    return newProduct;
   }
 
   // update new product - product_id === _id object attributes

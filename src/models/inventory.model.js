@@ -1,33 +1,38 @@
 "use strict";
 const mongoose = require("mongoose"); // Erase if already required
 
+const collection_name = "Inventories";
+const document_name = "Inventory";
+
 // Declare the Schema of the Mongo model
 var inventorySchema = new mongoose.Schema(
   {
-    productId: {
-      type: String,
-      required: true,
-    },
-    quantity: {
-      // cart(10item) => quantity - 10
+    inven_productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+    inven_location: { type: String, default: "unknow" },
+    inven_stock: {
       type: Number,
       require: true,
     },
-    reservations: {
-      // { quantity: 10, userId: Number } đặt chỗ
-      type: Array,
-      required: false,
+    inven_shopId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    createdAt: {
-      type: Date,
-      default: Date.now(),
+    inven_reservations: {
+      // { quantity: 10, userId: Number } đặt chỗ
+      /*
+        cartId: "abc",
+        stock: 1,
+        createdOn: "2022-01-01T00:00:00.000Z",
+      */
+      type: Array,
+      default: [],
     },
   },
   {
-    collection: "Inventories",
+    collection: collection_name,
     timestamps: true,
   }
 );
 
 //Export the model
-module.exports = mongoose.model("Inventories", inventorySchema);
+module.exports = mongoose.model(document_name, inventorySchema);
