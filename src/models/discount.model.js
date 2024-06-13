@@ -44,7 +44,7 @@ var discountSchema = new mongoose.Schema(
       required: true,
     },
     discount_uses_count: {
-      type: Number, // discount đã sử dụng
+      type: Number, // count discount đã sử dụng
       require: true,
     },
     discount_users_used: {
@@ -63,7 +63,7 @@ var discountSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    discount_applied_to: {
+    discount_applies_to: {
       type: String,
       enum: ["all", "specific"],
     },

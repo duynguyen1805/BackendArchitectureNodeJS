@@ -8,3 +8,8 @@ missing para => status: 400, errCode: 1
     - logout => delete collection keyStore
     - handlerRefreshToken => RT đã sử dụng thì xóa keyStore => relogin, chưa sử dụng thì cấp lại cặp access và refresh token mới
 */
+
+/*
+    còn thiếu:
+    - handle check payload input for method POST
+*/

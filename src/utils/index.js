@@ -1,6 +1,7 @@
 "use strict";
 
 const _ = require("lodash");
+const { Types } = require("mongoose");
 
 /**
  * Returns an object containing only the specified fields from the input object.
@@ -113,6 +114,10 @@ const updateNestedObjectParser = (obj) => {
 //   return result;
 // };
 
+const convert_toObjectId_MongoDB = (string_id) => {
+  return new Types.ObjectId(string_id);
+};
+
 module.exports = {
   getInfoData,
   getSelectData,
@@ -120,4 +125,5 @@ module.exports = {
   removeUndefinedNullObject,
   updateNestedObjectParser,
   // removeUndefinedNullObject_ALLLevel_Nested_ObjectParse,
+  convert_toObjectId_MongoDB,
 };
