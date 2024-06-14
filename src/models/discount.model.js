@@ -49,7 +49,7 @@ var discountSchema = new mongoose.Schema(
     },
     discount_users_used: {
       type: Array,
-      default: [],
+      default: [], // [{userId: "123456789", usageCount: 1}]
     },
     discount_min_order_value: {
       type: Number,

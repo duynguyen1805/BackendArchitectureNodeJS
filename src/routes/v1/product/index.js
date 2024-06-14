@@ -43,8 +43,12 @@ router.patch(
   asyncHandler(DiscountController.updateDiscountCode)
 );
 router.get(
-  "/discount-by-shop",
+  "/get-discount-by-shop",
   asyncHandler(DiscountController.getAllDiscountByShop)
+);
+router.post(
+  "/get-discount-amount",
+  asyncHandler(DiscountController.getDiscountAmount)
 );
 
 // QUERY

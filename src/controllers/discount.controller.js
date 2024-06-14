@@ -47,6 +47,16 @@ class DiscountController {
       }),
     }).send(res);
   };
+
+  getDiscountAmount = async (req, res, next) => {
+    new SuccessResponse.OK({
+      message: "Get discount amount successfully",
+      metadata: await DiscountService.getDiscountAmount({
+        ...req.body,
+        userId: req.user.userId,
+      }),
+    }).send(res);
+  };
 }
 
 module.exports = new DiscountController();

@@ -185,6 +185,88 @@ class DiscountService {
     });
     return discounts;
   }
+
+  /*
+    Apply discount code to checkout order
+    products = [
+      { product_id, shopId, quantity, price name },
+      { product_id, shopId, quantity, price name }
+    ]
+  */
+  static async getDiscountAmount({ code, shopId, userId, products }) {
+    const foundDiscount = await findDiscount({ code, shopId });
+    if (!foundDiscount) {
+      throw new errResponse.NotFoundError("Discount code not found");
+    }
+
+    const {
+      discount_isActive,
+      discount_max_uses,
+      discount_start_date,
+      discount_end_date,
+      discount_min_order_value,
+      discount_users_used,
+      discount_type,
+      discount_value,
+    } = foundDiscount;
+
+    if (!discount_isActive) {
+      throw new errResponse.NotFoundError(
+        "Discount code not active or expired"
+      );
+    }
+    if (discount_max_uses === 0) {
+      throw new errResponse.NotFoundError("Discount code are OUT");
+    }
+
+    if (
+      new Date() < new Date(discount_start_date) ||
+      new Date() > new Date(discount_end_date)
+    ) {
+      throw new errResponse.BadRequestError("Discount code has expired !");
+    }
+
+    // check discount_min_order_value ?
+    let totalOrder = 0;
+    if (discount_min_order_value > 0) {
+      // get total order
+      totalOrder = products.reduce((acc, product) => {
+        return acc + product.price * product.quantity;
+      }, 0);
+
+      if (totalOrder < discount_min_order_value) {
+        throw new errResponse.BadRequestError(
+          `Total order must be greater than min order value (> ${min_order_value})`
+        );
+      }
+    }
+
+    // check số lần được áp dụng cho 1 người
+    if (discount_max_uses_per_user > 0) {
+      const discount_used_by_user = discount_users_used.find(
+        (user) => user.userId === userId
+      );
+      if (discount_used_by_user) {
+        if (discount_used_by_user.usageCount >= discount_max_uses_per_user) {
+          throw new errResponse.BadRequestError(
+            "The discount code has expired"
+          );
+        }
+      }
+    }
+
+    // check discount_type [fixed-amount, percentage] >> cacl amount được giảm
+    const amount =
+      discount_type == "fixed-amount"
+        ? discount_value
+        : totalOrder * (discount_value / 100);
+
+    return {
+      totalOrder,
+      discount: amount,
+      totalPrice: totalOrder - amount,
+    };
+  }
 }
 
 module.exports = DiscountService;
