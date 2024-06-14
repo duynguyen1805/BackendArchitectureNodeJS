@@ -9,7 +9,22 @@ missing para => status: 400, errCode: 1
     - handlerRefreshToken => RT đã sử dụng thì xóa keyStore => relogin, chưa sử dụng thì cấp lại cặp access và refresh token mới
 */
 
+/**
+    workflow Discount CODE hiện tại
+    - 2 loại discount_code [fixed-amount, percentage]
+    - áp dụng cho tất cả sp của shop hoặc từng sản phẩm chỉ định ["all", "specific"]
+    - discount_code áp dụng cho sản phẩm chỉ định (kèm theo điều kiện discount_min_order_value)
+    - [1] không đủ giá trị discount_min_order_value mà khách hàng add thêm sp KHÔNG ÁP DỤNG discount => KHÔNG ÁP DỤNG discount đó luôn
+    - [2] không đủ giá trị discount_min_order_value mà khách hàng add thêm sp KHÔNG ÁP DỤNG discount => chỉ ÁP DỤNG cho sp có discount
+*/
+
 /*
     còn thiếu:
     - handle check payload input for method POST
+    - delete discount_code mới BASIC còn chưa rõ ràng các TH:
+        Tìm tồn tại rồi mới xóa
+        discount_code đó có đang áp dụng cho đơn hàng nào không
+        discount_code đang áp dụng thì shop xóa sẽ xử lý như thế nào
+
+    - handle lại getDiscountAmount theo flow 2 phương án trong workflow Discount CODE
 */

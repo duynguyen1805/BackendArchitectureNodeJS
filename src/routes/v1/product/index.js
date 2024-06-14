@@ -1,7 +1,6 @@
 var express = require("express");
 var router = express.Router();
 const ProductController = require("../../../controllers/product.controller");
-const DiscountController = require("../../../controllers/discount.controller");
 const { asyncHandler } = require("../../../helpers/asyncHandler");
 const {
   authentication,
@@ -22,34 +21,12 @@ router.get(
 router.post("/find_all", asyncHandler(ProductController.findAll_Products));
 router.get("/:product_id", asyncHandler(ProductController.find_DetailProduct));
 
-router.get(
-  "/discount",
-  asyncHandler(DiscountController.getProductsByDiscountCode)
-);
-
-// authentication
+// ----------------------------authentication----------------------------
 router.use(authentication_Ver2);
 
 // route need authentication
 router.post("/create", asyncHandler(ProductController.createProduct));
 router.patch("/:product_id", asyncHandler(ProductController.UpdateProduct));
-
-router.post(
-  "/discount/create",
-  asyncHandler(DiscountController.createDiscountCode)
-);
-router.patch(
-  "/discount/update",
-  asyncHandler(DiscountController.updateDiscountCode)
-);
-router.get(
-  "/get-discount-by-shop",
-  asyncHandler(DiscountController.getAllDiscountByShop)
-);
-router.post(
-  "/get-discount-amount",
-  asyncHandler(DiscountController.getDiscountAmount)
-);
 
 // QUERY
 router.get(

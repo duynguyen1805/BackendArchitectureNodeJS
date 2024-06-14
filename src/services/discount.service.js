@@ -40,10 +40,7 @@ class DiscountService {
       max_uses,
       max_uses_per_user,
     } = payload;
-    // kiem tra
-    if (new Date() < new Date(start_date) || new Date() > new Date(end_date)) {
-      throw new errResponse.BadRequestError("Invalid start date or end date");
-    }
+    // kiem tra ngay bat dau, ngay ket thuc
     if (new Date(start_date) >= new Date(end_date)) {
       throw new errResponse.BadRequestError(
         "Start date must be before end date"
@@ -51,7 +48,8 @@ class DiscountService {
     }
 
     // create index for discount code
-    if (found_Discount({ code, shopId })) {
+    const foundedDiscount = await findDiscount({ code, shopId });
+    if (foundedDiscount) {
       throw new errResponse.BadRequestError(
         "Discount code Exist, is already used"
       );
@@ -110,13 +108,18 @@ class DiscountService {
       throw new errResponse.BadRequestError("Discount code not found");
     }
 
-    if (new Date() < new Date(start_date) || new Date() > new Date(end_date)) {
-      throw new errResponse.BadRequestError("Invalid start date or end date");
-    }
-    if (new Date(start_date) >= new Date(end_date)) {
-      throw new errResponse.BadRequestError(
-        "Start date must be before end date"
-      );
+    if (start_date || end_date) {
+      if (
+        new Date() < new Date(start_date) ||
+        new Date() > new Date(end_date)
+      ) {
+        throw new errResponse.BadRequestError("Invalid start date or end date");
+      }
+      if (new Date(start_date) >= new Date(end_date)) {
+        throw new errResponse.BadRequestError(
+          "Start date must be before end date"
+        );
+      }
     }
 
     return await discountModel.findOneAndUpdate(
@@ -206,6 +209,7 @@ class DiscountService {
       discount_end_date,
       discount_min_order_value,
       discount_users_used,
+      discount_max_uses_per_user,
       discount_type,
       discount_value,
     } = foundDiscount;
@@ -266,6 +270,81 @@ class DiscountService {
       discount: amount,
       totalPrice: totalOrder - amount,
     };
+  }
+
+  static async deleteDiscountCode({ code, shopId }) {
+    const deleted = await discountModel.findOneAndDelete({
+      discount_code: code,
+      discount_shop: convert_toObjectId_MongoDB(shopId),
+    });
+    return deleted;
+  }
+
+  /*
+    Cancel discount code by User
+  */
+  static async cancelDiscountCode({ code, shopId, userId }) {
+    const foundDiscount = await findDiscount({ code, shopId });
+    if (!foundDiscount) {
+      throw new errResponse.NotFoundError("Discount code not found");
+    }
+
+    const result = await discountModel.findOneAndUpdate(foundDiscount._id, {
+      $pull: {
+        // delete userId from discount_users_used
+        discount_users_used: userId,
+      },
+      $inc: {
+        discount_max_uses: 1,
+        discount_uses_count: -1,
+      },
+    });
+
+    return result;
+
+    /* Discount model 2 - discount_users_used có dạng [{userId, usageCount}]
+     // Sử dụng transaction để đảm bảo tính toàn vẹn của dữ liệu
+  const session = await discountModel.startSession();
+  session.startTransaction();
+  try {
+    // Giảm usageCount cho userId
+    await discountModel.findOneAndUpdate(
+      { _id: foundDiscount._id, "discount_users_used.userId": userId },
+      {
+        $inc: { "discount_users_used.$.usageCount": -1 },
+      },
+      { session }
+    );
+
+    // Xóa userId khỏi mảng nếu usageCount <= 0
+    await discountModel.findOneAndUpdate(
+      { _id: foundDiscount._id },
+      {
+        $pull: {
+          discount_users_used: {
+            userId: userId,
+            usageCount: { $lte: 0 }
+          },
+        },
+        $inc: {
+          discount_max_uses: 1,
+          discount_uses_count: -1,
+        },
+      },
+      { session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return { message: "Discount code usage cancelled successfully" };
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+    
+    */
   }
 }
 

@@ -28,10 +28,11 @@ class DiscountController {
     new SuccessResponse.OK({
       message: "Get list of products successfully",
       metadata: await DiscountService.getProductsByDiscountCode({
-        userId: req.user.userId || null,
+        userId: req.user ? userId : null,
         shopId: req.query.shopId,
         code: req.query.code,
         page: req.query.page,
+        limit: req.query.limit,
       }),
     }).send(res);
   };
@@ -53,6 +54,27 @@ class DiscountController {
       message: "Get discount amount successfully",
       metadata: await DiscountService.getDiscountAmount({
         ...req.body,
+        userId: req.user.userId,
+      }),
+    }).send(res);
+  };
+
+  deleteDiscountCode = async (req, res, next) => {
+    new SuccessResponse.OK({
+      message: "Delete discount successfully",
+      metadata: await DiscountService.deleteDiscountCode({
+        code: req.body.code,
+        shopId: req.user.userId,
+      }),
+    }).send(res);
+  };
+
+  cancelDiscountCode = async (req, res, next) => {
+    new SuccessResponse.OK({
+      message: "Cancel discount successfully",
+      metadata: await DiscountService.cancelDiscountCode({
+        code: req.body.code,
+        shopId: req.body.shopId,
         userId: req.user.userId,
       }),
     }).send(res);
