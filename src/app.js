@@ -39,27 +39,27 @@ app.use(compression());
 // Sử dụng CORS middleware để xử lý Cross-Origin Resource Sharing
 app.use(cors());
 // const allowedOrigins = process.env.URL_FONTEND.split(",");
-// let allowedOrigins;
-// if (process.env.NODE_ENV === "development") {
-//   // Lấy biến môi trường từ .env.local trong môi trường development
-//   require("dotenv").config({ path: ".env" });
-//   allowedOrigins = process.env.URL_FONTEND;
-// } else {
-//   allowedOrigins = process.env.URL_FONTEND;
-// }
+let allowedOrigins;
+if (process.env.NODE_ENV === "development") {
+  // Lấy biến môi trường từ .env.local trong môi trường development
+  require("dotenv").config({ path: ".env" });
+  allowedOrigins = process.env.URL_FRONTEND;
+} else {
+  allowedOrigins = process.env.URL_FRONTEND;
+}
 
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-//         callback(null, true);
-//       } else {
-//         callback(new Error("Not allowed by CORS"));
-//       }
-//     },
-//     credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 // Sử dụng body-parser để xử lý dữ liệu từ request
 app.use(bodyParser.urlencoded({ extended: false }));

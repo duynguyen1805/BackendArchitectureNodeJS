@@ -90,6 +90,32 @@ const clothingSchema = new mongoose.Schema(
 
 const electronicSchema = new mongoose.Schema(
   {
+    type_detail: {
+      type: String,
+      required: true,
+      default: "other",
+    },
+    brand: {
+      type: String,
+      required: true,
+    },
+    cpu: {
+      type: String,
+      require: false,
+    },
+    ram: {
+      type: String,
+      require: false,
+    },
+    screen_size: {
+      type: String,
+      require: false,
+    },
+    capacity: {
+      type: String,
+      require: false,
+    },
+
     manufacturer: {
       type: String,
       required: true,
