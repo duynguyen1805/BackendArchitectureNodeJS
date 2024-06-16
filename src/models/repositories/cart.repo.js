@@ -1,9 +1,13 @@
 const { Types } = require("mongoose");
 const { cartSchema } = require("../cart.model");
-const { getSelectData, unGetSelectData } = require("../../utils");
+const {
+  getSelectData,
+  unGetSelectData,
+  convert_toObjectId_MongoDB,
+} = require("../../utils");
 
 const findCart = async ({ userId }) => {
-  return await cartSchema.findOne({ cart_userId: userId }).lean();
+  return await cartSchema.findOne({ cart_userId: userId });
 };
 
 const createUserCart = async ({ userId, product }) => {
@@ -27,30 +31,30 @@ const createUserCart = async ({ userId, product }) => {
   return await cartSchema.findOneAndUpdate(query, updateOrInsert, options);
 };
 
-const updateOrinsert_UserCart_Quantity = async ({ userId, product }) => {
+const insertNewProductOrUpdateQuantity = async ({ userId, product }) => {
   const query = {
-      cart_userId: userId,
-      "cart_products.productId": product.productId,
-    },
-    updateSet = {
-      //   $set: {
-      //     "cart_products.$.quantity": product.quantity,
-      //   },
+    cart_userId: userId,
+    "cart_products.productId": product.productId,
+  };
+  const found_productId_inCart = await cartSchema.findOne(query);
+
+  if (found_productId_inCart) {
+    // CASE 1: product exist in cart >> update quantity
+    const updateSet = {
       $inc: {
-        // inc để tăng giá trị (cộng dồn)
         "cart_products.$.quantity": product.quantity,
       },
-    },
-    options = {
-      upsert: true,
-      new: true,
     };
 
-  return await cartSchema.findOneAndUpdate(query, updateSet, options);
+    return await cartSchema.findOneAndUpdate(query, updateSet, { new: true });
+  } else {
+    // CASE 2: product not exist in cart >> add new product in cart_products
+    return await createUserCart({ userId, product });
+  }
 };
 
 module.exports = {
   findCart,
   createUserCart,
-  updateOrinsert_UserCart_Quantity,
+  insertNewProductOrUpdateQuantity,
 };

@@ -4,7 +4,7 @@ const errResponse = require("../core/error.response");
 const {
   findCart,
   createUserCart,
-  updateOrinsert_UserCart_Quantity,
+  insertNewProductOrUpdateQuantity,
 } = require("../models/repositories/cart.repo");
 const { findProduct_ById } = require("../models/repositories/product.repo");
 
@@ -34,7 +34,7 @@ class CartService {
     }
 
     // nếu đã có hoặc không sản phẩm đó trong giỏ hàng
-    return await updateOrinsert_UserCart_Quantity({ userId, product });
+    return await insertNewProductOrUpdateQuantity({ userId, product });
   }
 
   /*
@@ -76,7 +76,7 @@ class CartService {
       });
     }
 
-    return await updateOrinsert_UserCart_Quantity({
+    return await insertNewProductOrUpdateQuantity({
       userId,
       product: {
         productId: productId,
@@ -98,7 +98,9 @@ class CartService {
         },
       };
 
-    const deleteCart = await cartSchema.findOneAndUpdate(query, updateSet);
+    const deleteCart = await cartSchema.findOneAndUpdate(query, updateSet, {
+      new: true,
+    });
 
     return deleteCart;
   }
