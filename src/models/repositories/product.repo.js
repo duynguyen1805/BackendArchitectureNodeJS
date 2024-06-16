@@ -98,6 +98,10 @@ const searchProducts_ByUser = async ({ keySearch }) => {
   return result;
 };
 
+const findProduct_ById = async ({ product_id }) => {
+  return await ProductSchema.findById(product_id).lean();
+};
+
 module.exports = {
   findAll_DraftsProduct_ByShop,
   publish_Product_ByShop,
@@ -107,4 +111,5 @@ module.exports = {
   findAll_Products,
   find_DetailProduct,
   update_ProductById,
+  findProduct_ById,
 };
