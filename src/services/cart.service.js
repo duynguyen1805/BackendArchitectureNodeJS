@@ -96,6 +96,9 @@ class CartService {
             productId,
           },
         },
+        $inc: {
+          cart_count_product: -1,
+        },
       };
 
     const deleteCart = await cartSchema.findOneAndUpdate(query, updateSet, {
