@@ -98,8 +98,8 @@ const searchProducts_ByUser = async ({ keySearch }) => {
   return result;
 };
 
-const findProduct_ById = async ({ product_id }) => {
-  return await ProductSchema.findById(product_id).lean();
+const findProduct_ById = async ({ productId }) => {
+  return await ProductSchema.findById(productId).lean();
 };
 
 module.exports = {
