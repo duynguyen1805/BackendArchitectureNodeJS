@@ -80,7 +80,7 @@ app.use((error, req, res, next) => {
   return res.status(statusCode).json({
     status: "error",
     code: statusCode,
-    //stack: error.stack, // >>> hiển thị code sai vị trí nào
+    stack: error.stack, // >>> hiển thị code sai vị trí nào
     message: error.message,
   });
 });

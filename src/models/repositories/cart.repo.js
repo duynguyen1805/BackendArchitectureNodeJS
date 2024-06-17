@@ -10,6 +10,13 @@ const findCart = async ({ userId }) => {
   return await cartSchema.findOne({ cart_userId: userId });
 };
 
+const findCart_ById = async ({ cartId }) => {
+  return await cartSchema.findOne({
+    _id: convert_toObjectId_MongoDB(cartId),
+    cart_state: "active",
+  });
+};
+
 const createUserCart = async ({ userId, product }) => {
   const query = {
       cart_userId: userId,
@@ -55,6 +62,7 @@ const insertNewProductOrUpdateQuantity = async ({ userId, product }) => {
 
 module.exports = {
   findCart,
+  findCart_ById,
   createUserCart,
   insertNewProductOrUpdateQuantity,
 };

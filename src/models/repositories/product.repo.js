@@ -102,6 +102,42 @@ const findProduct_ById = async ({ productId }) => {
   return await ProductSchema.findById(productId).lean();
 };
 
+// const checkAvalableProduct = async ({ products }) => {
+//   return Promise.all(
+//     products.map(async (product) => {
+//       const foundProduct = await findProduct_ById({
+//         productId: product.productId,
+//       });
+//       if (foundProduct) {
+//         return {
+//           price: foundProduct.product_price,
+//           quantity: product.quantity,
+//           productId: product.productId,
+//         };
+//       }
+//     })
+//   );
+// };
+
+const checkAvalableProduct = async ({ products }) => {
+  const results = await Promise.all(
+    products.map(async (product) => {
+      const foundProduct = await findProduct_ById({
+        productId: product.productId,
+      });
+      if (foundProduct) {
+        return {
+          price: foundProduct.product_price,
+          quantity: product.quantity,
+          productId: product.productId,
+        };
+      }
+    })
+  );
+  // Bỏ qua product undefine
+  return results.filter((result) => result !== undefined);
+};
+
 module.exports = {
   findAll_DraftsProduct_ByShop,
   publish_Product_ByShop,
@@ -112,4 +148,5 @@ module.exports = {
   find_DetailProduct,
   update_ProductById,
   findProduct_ById,
+  checkAvalableProduct,
 };

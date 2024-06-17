@@ -27,4 +27,9 @@ missing para => status: 400, errCode: 1
         discount_code đang áp dụng thì shop xóa sẽ xử lý như thế nào
 
     - handle lại getDiscountAmount theo flow 2 phương án trong workflow Discount CODE
+
+    - handle lại checkoutReview, xử lý trường hợp áp dụng nhiều hơn 1 discount_code
+    - handle check productId trong item_products có match với shopId bên ngoài không. payload checkoutReview
+    - handle lại case checkAvalableProduct nếu có sản phẩm không còn tồn tại >>> remove luôn or add message thông báo
+    - chưa áp dụng được nhiều mã vào, mã áp dụng cho sản phẩm ALL SHOP, chưa áp dụng cho từng sản phẩm chỉ định
 */
