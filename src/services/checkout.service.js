@@ -1,9 +1,13 @@
 "use strict";
 
+const errResponse = require("../core/error.response");
+const orderSchema = require("../models/order.model");
 const { findCart_ById } = require("../models/repositories/cart.repo");
 const { checkAvalableProduct } = require("../models/repositories/product.repo");
 
 const DiscountService = require("../services/discount.service");
+
+const { acquireLock, releaseLock } = require("../services/redis.service");
 
 class CheckoutService {
   /* 
@@ -106,6 +110,99 @@ class CheckoutService {
       shop_order_ids_new,
     };
   }
+
+  /*------------------------------------- Order -------------------------------------*/
+  static async orderByUser({
+    shop_order_ids,
+    cartId,
+    userId,
+    user_address = {},
+    user_payment = {},
+  }) {
+    const { checkout_order, shop_order_ids_new } = await this.checkoutReview({
+      cartId,
+      userId,
+      shop_order_ids,
+    });
+
+    /*
+      "shop_order_ids_new": [
+            {
+                "shopId": "66600e4651d59054392893a7",
+                "shop_discounts": [
+                    {
+                        "discount_code": "SHOP-01"
+                    }
+                ],
+                "priceRaw": 2610000,
+                "priceAppliedDiscount": 2580000,
+                "item_products": [
+                    {
+                        "price": 660000,
+                        "quantity": 1,
+                        "productId": "6668002026cd01f010adc9e3"
+                    },
+                    {
+                        "price": 650000,
+                        "quantity": 3,
+                        "productId": "666931bc0f6d432dd88bb821"
+                    }
+                ]
+            },
+        ]
+    */
+    // check product có vượt tồn kho hay không
+    // get new array all product in shop_order_ids_new
+    const products = shop_order_ids_new.flatMap((order) => order.item_products);
+    console.log("list products in order ::: ", products);
+
+    const acquireLockProduct = [];
+
+    // optimistic lock - https://www.youtube.com/watch?v=UjiGO37qugY
+    for (let i = 0; i < products.length; i++) {
+      const { productId, shopId } = products[i];
+      const keyLock = await acquireLock(productId, quantity, cartId);
+      acquireLockProduct.push(keyLock ? true : false); // nếu có false (có sp đã được cập quantity = 0 hoặc ẩn không bán nữa) >> thông báo người dùng chọn lại
+      if (keyLock) {
+        await releaseLock(keyLock);
+      }
+    }
+
+    // nếu có 1 sản phẩm hết hàng trong kho
+    if (!acquireLockProduct.includes(false)) {
+      throw new errResponse.BadRequestError(
+        "Some products have been updated, pls return to the cart."
+      );
+    }
+
+    // nếu thành công hết >> tạo new ORDER
+    const newOrder = await orderSchema.create({
+      order_userId: userId,
+      order_checkout: checkout_order,
+      order_products: shop_order_ids_new,
+      order_shipping: user_address,
+      order_payment: user_payment,
+    });
+
+    // CASE: insert thành công, thì remove product có trong cart
+    if (newOrder) {
+      // remove product trong cart
+    }
+
+    return newOrder;
+  }
+
+  // get list orders by userId [USER]
+  static async getOrdersByUser({ userId }) {}
+
+  // get detail order by id [USER]
+  static async getOneOrderByUser({ userId, orderId }) {}
+
+  // cancel order [USER]
+  static async cancelOrderByUser({ userId, orderId }) {}
+
+  // update order status [SHOP | ADMIN]
+  static async updateOrderStatus({ shopId, orderId }) {}
 }
 
 module.exports = CheckoutService;

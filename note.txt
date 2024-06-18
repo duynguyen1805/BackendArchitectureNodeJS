@@ -1,6 +1,3 @@
-status req: 
-missing para => status: 400, errCode: 1
-
 /**
     workflow Authentication hiện tại
     - signup => create publicKey and privateKey => save to collection keyStore
@@ -31,5 +28,5 @@ missing para => status: 400, errCode: 1
     - handle lại checkoutReview, xử lý trường hợp áp dụng nhiều hơn 1 discount_code
     - handle check productId trong item_products có match với shopId bên ngoài không. payload checkoutReview
     - handle lại case checkAvalableProduct nếu có sản phẩm không còn tồn tại >>> remove luôn or add message thông báo
-    - chưa áp dụng được nhiều mã vào, mã áp dụng cho sản phẩm ALL SHOP, chưa áp dụng cho từng sản phẩm chỉ định
+    - chưa áp dụng được nhiều mã vào, mã đang áp dụng cho sản phẩm trong đơn hàng của 1SHOP, chưa áp dụng cho từng sản phẩm chỉ định
 */
