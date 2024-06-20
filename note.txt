@@ -29,4 +29,6 @@
     - handle check productId trong item_products có match với shopId bên ngoài không. payload checkoutReview
     - handle lại case checkAvalableProduct nếu có sản phẩm không còn tồn tại >>> remove luôn or add message thông báo
     - chưa áp dụng được nhiều mã vào, mã đang áp dụng cho sản phẩm trong đơn hàng của 1SHOP, chưa áp dụng cho từng sản phẩm chỉ định
+    
+    - hoàn thành tiếp tục các service checkout
 */

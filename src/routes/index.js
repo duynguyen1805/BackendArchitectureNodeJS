@@ -4,6 +4,10 @@ const {
   check_apiKey,
   checkPermissions_apiKey,
 } = require("../auth/checkAuth_apiKey.js");
+const { pushToLogDiscord } = require("../middlewares/toDiscord.js");
+
+// add log to discord channel
+router.use(pushToLogDiscord);
 
 // // check apiKey
 // router.use(check_apiKey);
