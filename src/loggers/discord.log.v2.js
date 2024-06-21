@@ -31,7 +31,7 @@ class LoggerService {
     } = logData;
 
     const codeMessage = {
-      content: message,
+      content: `URL_REQUEST:   ${message}`,
       embeds: [
         {
           color: parseInt("00ff00", 16),

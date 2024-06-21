@@ -5,6 +5,7 @@ const {
   db: { host, name, port },
 } = require("../config/config.mongodb");
 const connectString = `mongodb://${host}:${port}/${name}`;
+// const connectString = `mongodb://172.17.0.3:${port}/${name}`;
 
 /** ---------------- cách cũ -------------- */
 // mongoose

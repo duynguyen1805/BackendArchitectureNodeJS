@@ -1,8 +1,19 @@
 "use strict";
 
 const redis = require("redis");
-const redisClient = redis.createClient();
+const redisClient = redis.createClient({
+  host: "127.0.0.1",
+  port: 6379,
+});
 const { promisify } = require("util"); // => chuyển đổi hàm thành hàm asycn await promise
+
+// redisClient.ping((err, result) => {
+//   if (err) {
+//     console.error("ERROR connecting redis: ", err);
+//   } else {
+//     console.log("--------------CONNECTED to REDIS--------------", result);
+//   }
+// });
 
 const pexpire = promisify(redisClient.pExpire).bind(redisClient);
 const setnxAsync = promisify(redisClient.setNX).bind(redisClient);
