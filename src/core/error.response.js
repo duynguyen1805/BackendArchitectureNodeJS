@@ -437,6 +437,15 @@ class NetworkAuthenticationRequiredError extends ErrorResponse {
   }
 }
 
+class RedisErrorResponse extends ErrorResponse {
+  constructor(
+    message = ReasonPhrases.INTERNAL_SERVER_ERROR,
+    status = StatusCodes.INTERNAL_SERVER_ERROR
+  ) {
+    super(message, status);
+  }
+}
+
 // -------------------------------------------------------------
 
 // class SuccessResponse {
@@ -592,4 +601,5 @@ module.exports = {
   HttpVersionNotSupportedError,
   InsufficientStorageError,
   NetworkAuthenticationRequiredError,
+  RedisErrorResponse,
 };

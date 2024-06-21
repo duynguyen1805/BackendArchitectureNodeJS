@@ -21,6 +21,10 @@ app.use(
 
 // INIT DATABASE
 require("./db/init.mongodb");
+// INIT REDIS
+const initRedis = require("./db/init.redisdb");
+initRedis.initRedis();
+
 // count connections & check overload
 // const {
 //   countConnect,

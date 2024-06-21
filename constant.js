@@ -5,4 +5,13 @@ const ROLE = {
   EDIT: "EDIT",
 };
 
-module.exports = { ROLE };
+const REDIS_CONNECT_TIMEOUT = 10000,
+  REDIS_CONNECT_MESSAGE = {
+    code: -99,
+    message: {
+      vn: "Redis lỗi rầu.!",
+      en: "Service connection error.! Timeoutttt",
+    },
+  };
+
+module.exports = { ROLE, REDIS_CONNECT_TIMEOUT, REDIS_CONNECT_MESSAGE };
