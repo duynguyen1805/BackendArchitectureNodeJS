@@ -19,6 +19,15 @@ app.use(
   })
 );
 
+// ---------------------Test publish subscribe REDIS---------------------
+// const call_purchaseProduct_test = require("./test/subscribe.publish.test"); // gọi publish
+// require("./test/subscribe.inventory.test"); // subscriber sẽ lắng nghe và hanlde update inventory
+// call_purchaseProduct_test.purchaseProduct({
+//   productId: "6668002026cd01f01product",
+//   quantity: 10,
+// });
+// ---------------------Test publish subscribe REDIS---------------------
+
 // INIT DATABASE
 require("./db/init.mongodb");
 // INIT REDIS
