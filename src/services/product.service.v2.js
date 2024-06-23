@@ -13,6 +13,8 @@ const errResponse = require("../core/error.response");
 
 const config_service_product = require("../services/product.service.v2.config");
 
+const NotificationService = require("../services/notification.service");
+
 const {
   removeUndefinedNullObject,
   updateNestedObjectParser,
@@ -157,6 +159,20 @@ class Product {
         location: "unknow",
       });
     }
+
+    // push notification to SYSTEM collection
+    NotificationService.pushNotification({
+      type: "SHOP-NEW-PRODUCT",
+      senderId: this.product_shop,
+      // receiverId: "666db92133b244cc739d5f0d", // thay thế bằng user đăng ký shop
+      content: `Shop ${this.product_shop} vừa ra mắt bạn`,
+      options: {
+        product_name: this.product_name,
+        shopId: this.product_shop,
+      },
+    })
+      .then((result) => console.log(result))
+      .catch((err) => console.log(err));
 
     return newProduct;
   }

@@ -33,4 +33,6 @@
     - hoàn thành tiếp tục các service checkout
 
     - chưa check userId cho deleteComment
+
+    - notification chưa handle noti_receiverId = userId, chưa full noti_type, có shopID, chưa lấy name shop
 */
