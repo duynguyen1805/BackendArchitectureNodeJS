@@ -2,6 +2,7 @@
 
 const commentSchema = require("../models/comment.model");
 const { convert_toObjectId_MongoDB } = require("../utils/index");
+const { findProduct_ById } = require("../models/repositories/product.repo");
 const errResponse = require("../core/error.response");
 
 /*
@@ -127,6 +128,55 @@ class CommentService {
       });
 
     return comments;
+  }
+
+  // delete comments - image in folder _img_structure
+  static async deleteComments({ commentId, productId }) {
+    // check product exist in DB
+    const foundProduct = await findProduct_ById({ productId });
+    if (!foundProduct) {
+      throw new errResponse.NotFoundError("Product not exist");
+    }
+
+    // xác định giá trị left right parent comment (comment bị xóa)
+    const comment = await commentSchema.findById(commentId);
+    if (!comment) {
+      throw new errResponse.NotFoundError("Comment not exist");
+    }
+
+    const leftValue = comment.comment_left;
+    const rightValue = comment.comment_right;
+
+    const width_parent_comment = rightValue - leftValue + 1;
+
+    // delete all comment children
+    await commentSchema.deleteMany({
+      comment_productId: convert_toObjectId_MongoDB(productId),
+      comment_left: { $gte: leftValue },
+      comment_right: { $lte: rightValue },
+    });
+
+    // cập nhật giá trị left right còn lại
+    await commentSchema.updateMany(
+      {
+        comment_productId: convert_toObjectId_MongoDB(productId),
+        comment_right: { $gt: rightValue },
+      },
+      {
+        $inc: { comment_right: -width_parent_comment },
+      }
+    );
+    await commentSchema.updateMany(
+      {
+        comment_productId: convert_toObjectId_MongoDB(productId),
+        comment_left: { $gt: rightValue },
+      },
+      {
+        $inc: { comment_left: -width_parent_comment },
+      }
+    );
+
+    return true;
   }
 }
 

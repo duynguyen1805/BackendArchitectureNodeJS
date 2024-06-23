@@ -11,14 +11,14 @@ const { authentication_Ver2 } = require("../../../auth/authUtils");
 //   REFRESHTOKEN: "refreshtoken",
 // };
 
-router.get(
-  "/get-list-comment",
-  asyncHandler(CommentController.getCommentByParentId)
-);
-
 // authentication
 router.use(authentication_Ver2);
 
 router.post("/create", asyncHandler(CommentController.createComment));
+router.get(
+  "/get-list-comment",
+  asyncHandler(CommentController.getCommentByParentId)
+);
+router.delete("/delete", asyncHandler(CommentController.deleteComment));
 
 module.exports = router;
