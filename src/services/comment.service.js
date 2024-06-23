@@ -1,6 +1,6 @@
 "use strict";
 
-const commentModel = require("../models/comment.model");
+const commentSchema = require("../models/comment.model");
 const { convert_toObjectId_MongoDB } = require("../utils/index");
 const errResponse = require("../core/error.response");
 
@@ -19,7 +19,7 @@ class CommentService {
     parentCommentId = null,
   }) {
     // new comment
-    const comment = new commentModel({
+    const comment = new commentSchema({
       comment_productId: productId,
       comment_userId: userId,
       comment_content: content,
@@ -30,14 +30,14 @@ class CommentService {
     let rightValue;
     if (parentCommentId) {
       // reply comment - chèn 1 node vô >> tăng lên 2 (left,right)
-      const parentComment = await commentModel.findById(parentCommentId);
-      if (parentComment) {
+      const parentComment = await commentSchema.findById(parentCommentId);
+      if (!parentComment) {
         throw new errResponse.NotFoundError("ID Parent comment not exist");
       }
       rightValue = parentComment.comment_right;
 
       // updateMany Comment
-      await commentModel.updateMany(
+      await commentSchema.updateMany(
         {
           comment_productId: convert_toObjectId_MongoDB(productId),
           comment_right: { $gte: rightValue },
@@ -45,7 +45,7 @@ class CommentService {
         { $inc: { comment_right: 2 } }
       );
 
-      await commentModel.updateMany(
+      await commentSchema.updateMany(
         {
           comment_productId: convert_toObjectId_MongoDB(productId),
           comment_left: { $gt: rightValue },
@@ -54,7 +54,7 @@ class CommentService {
       );
     } else {
       // find max rightValue
-      const maxRightValue = await commentModel.findOne(
+      const maxRightValue = await commentSchema.findOne(
         {
           comment_productId: convert_toObjectId_MongoDB(productId),
         },
@@ -75,6 +75,58 @@ class CommentService {
     comment.comment_right = rightValue + 1;
 
     return await comment.save();
+  }
+
+  static async getCommentByParentId({
+    productId,
+    parentCommentId = null,
+    limit = 50,
+    skip = 0,
+  }) {
+    if (parentCommentId) {
+      // get reply comment
+      const parentComment = await commentSchema.findById(parentCommentId);
+
+      if (!parentComment) {
+        throw new errResponse.NotFoundError("ID Parent comment not exist");
+      }
+
+      // get comment > leftParent && < rightParent
+      const comments = await commentSchema
+        .find({
+          comment_productId: convert_toObjectId_MongoDB(productId),
+          comment_left: { $gt: parentComment.comment_left }, // > leftParent
+          comment_right: { $lt: parentComment.comment_right }, // < rightParent
+        })
+        .select({
+          comment_left: 1,
+          comment_right: 1,
+          comment_content: 1,
+          comment_parentId: 1,
+        })
+        .sort({
+          comment_left: 1,
+        });
+
+      return comments;
+    }
+
+    const comments = await commentSchema
+      .find({
+        comment_productId: convert_toObjectId_MongoDB(productId),
+        comment_parentId: parentCommentId,
+      })
+      .select({
+        comment_left: 1,
+        comment_right: 1,
+        comment_content: 1,
+        comment_parentId: 1,
+      })
+      .sort({
+        comment_left: 1,
+      });
+
+    return comments;
   }
 }
 

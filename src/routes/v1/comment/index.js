@@ -11,6 +11,11 @@ const { authentication_Ver2 } = require("../../../auth/authUtils");
 //   REFRESHTOKEN: "refreshtoken",
 // };
 
+router.get(
+  "/get-list-comment",
+  asyncHandler(CommentController.getCommentByParentId)
+);
+
 // authentication
 router.use(authentication_Ver2);
 

@@ -14,6 +14,13 @@ class CommentController {
       }),
     }).send(res);
   };
+
+  getCommentByParentId = async (req, res, next) => {
+    new SuccessResponse.OK({
+      message: "Get comment successfully",
+      metadata: await CommentService.getCommentByParentId(req.query),
+    }).send(res);
+  };
 }
 
 module.exports = new CommentController();
