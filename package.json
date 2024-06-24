@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/mongoose": "^5.11.97",
+    "amqplib": "^0.10.4",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
@@ -21,6 +22,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
+    "kafkajs": "^2.2.4",
     "lodash": "^4.17.21",
     "mongoose": "^8.3.0",
     "mongoose-delete": "^1.0.2",

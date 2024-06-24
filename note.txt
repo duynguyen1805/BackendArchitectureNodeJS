@@ -36,3 +36,29 @@
 
     - notification chưa handle noti_receiverId = userId, chưa full noti_type, có shopID, chưa lấy name shop
 */
+
+/*
+    install kafka
+    docker network create kafka-network
+    docker network ls
+    
+    docker run -d --name kafkaMQ --network kafka-network -p 9092:9092 -e ALLOW_PLAINTEXT_LISTENER=yes -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 bitnami/kafka:latest
+    <RUN KAFKAMQ with Raft>
+    	docker run -d --name kafkaMQ -p 9092:9092 --net kafka-network ^
+    	-e KAFKA_BROKER_ID=1 ^
+    	-e KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093 ^
+    	-e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 ^
+    	-e KAFKA_PROCESS_ROLES=broker,controller ^
+    	-e KAFKA_NODE_ID=1 ^
+    	-e KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093 ^
+    	-e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT ^
+    	-e KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT ^
+    	-e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER ^ -e KAFKA_LOG_DIRS=/tmp/kraft-combined-logs ^
+    	-e KAFKA_AUTO_CREATE_TOPICS_ENABLE=false ^
+    	-e ALLOW_PLAINTEXT_LISTENER=yes ^
+    	-e KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER ^
+    	-e KAFKA_CFG_LISTENERS=CONTROLLER ^
+    	-e KAFKA_KRAFT_CLUSTER_ID=6yn6tnPDRUmYeNbF76dvZA ^
+    	bitnami/kafka:latest
+    <RUN KAFKAMQ with Raft>
+*/
