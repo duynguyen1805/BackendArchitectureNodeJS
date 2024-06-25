@@ -1,7 +1,7 @@
 //use npm i amqplib
 const amqplib = require("amqplib");
 
-const message = "Message to send from producer RabbitMQ";
+const message = "Message to send from producer RabbitMQ - BE E-commerce NodeJS";
 
 const runProducer = async () => {
   try {
@@ -18,9 +18,15 @@ const runProducer = async () => {
     // send a messages to queue channel
     channel.sendToQueue(queueName, Buffer.from(message));
     // console.log("message sent to queue: ", message);
+    setTimeout(() => {
+      connection.close();
+      process.exit(0);
+    }, 500);
   } catch (err) {
     console.error(err);
   }
 };
 
-runProducer().catch((err) => console.error(err));
+runProducer()
+  .then((rs) => console.log("run producer >> logs: ", rs))
+  .catch((err) => console.error(err));
