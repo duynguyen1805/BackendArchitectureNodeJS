@@ -37,7 +37,11 @@ class Database {
 
     mongoose
       .connect(connectString, { maxPoolSize: 100 }) // default pool size is 100
-      .then((_) => console.log(`Connected MongoDB Success .!`, connectString))
+      .then((_) =>
+        console.log(
+          `Connect Mongo - Connection Status: -----CONNECTED-----\n  ${connectString}`
+        )
+      )
       .catch((err) => console.log(`Error connection DB: `, err));
   }
 

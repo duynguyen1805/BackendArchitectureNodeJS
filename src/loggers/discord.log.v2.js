@@ -17,7 +17,9 @@ class LoggerService {
     this.chanelId = CHANNELID_DISCORD;
 
     this.client.on("ready", () => {
-      console.log("Logged is as ", this.client.user.tag);
+      console.log(
+        `DiscordBotLog - Connection Status: -----CONNECTED----- \n  Logged is as ${this.client.user.tag}`
+      );
     });
 
     this.client.login(TOKEN_DISCORD);

@@ -24,22 +24,22 @@ const client = {},
 
 const handleEventConnect = ({ connectionRedis }) => {
   connectionRedis.on(statusConnectRedis.CONNECT, () => {
-    console.log("connectionRedis - Connection Status: -----CONNECTED-----");
+    console.log("Connect Redis - Connection Status: -----CONNECTED-----");
     // clear timeout
     clearTimeout(connectionTimeOut);
   });
   connectionRedis.on(statusConnectRedis.RECONNECT, () => {
-    console.log("connectionRedis - Connection Status: RECONNECTING");
+    console.log("Connect Redis - Connection Status: RECONNECTING");
     // clear timeout
     clearTimeout(connectionTimeOut);
   });
   connectionRedis.on(statusConnectRedis.END, () => {
-    console.log("connectionRedis - Connection Status: END");
+    console.log("Connect Redis - Connection Status: END");
     // retry connect
     handleTimeOutError();
   });
   connectionRedis.on(statusConnectRedis.ERROR, (err) => {
-    console.log(`connectionRedis - Connection Status: ERROR with ${err}`);
+    console.log(`Connect Redis - Connection Status: ERROR with ${err}`);
     // retry connect
     handleTimeOutError();
   });
