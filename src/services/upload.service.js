@@ -23,6 +23,35 @@ const uploadImageFromUrl = async (
   }
 };
 
+// 2. upload from image local (multer)
+// upload img to server nodeJS and get link img from cloudinary
+const uploadImageFromLocal = async ({
+  pathimg,
+  folderName = "products/shopNguyen",
+}) => {
+  try {
+    const result = await cloudinary.uploader.upload(pathimg, {
+      public_id: "thumb",
+      folder: folderName,
+    });
+
+    console.log(result);
+    return {
+      image_url: result.secure_url,
+      shopId: 123,
+      // resize image
+      thumb_image: await cloudinary.url(result.public_id, {
+        height: 100,
+        width: 100,
+        format: "jpg",
+      }),
+    };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 module.exports = {
   uploadImageFromUrl,
+  uploadImageFromLocal,
 };
