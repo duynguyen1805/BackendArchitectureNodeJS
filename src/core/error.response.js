@@ -1,6 +1,7 @@
 "use strict";
 
 // const { StatusCodes, ReasonPhrases } = require("../core/httpStatusCode");
+const Logger = require("../loggers/winston.log");
 
 // class ErrorResponse extends Error {
 //   constructor(message, status) {
@@ -38,6 +39,9 @@ class ErrorResponse extends Error {
   constructor(message, status) {
     super(message);
     this.status = status;
+
+    // Ghi logs error use Winston
+    Logger.error(`${this.status} - ${this.message}`);
   }
 }
 

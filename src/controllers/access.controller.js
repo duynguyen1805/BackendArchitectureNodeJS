@@ -2,6 +2,7 @@
 // ES6
 const AccessService = require("../services/access.service");
 const successResponse = require("../core/success.response");
+const errResponse = require("../core/error.response");
 
 class AccessController {
   handlerRefreshToken = async (req, res, next) => {
@@ -33,6 +34,12 @@ class AccessController {
   };
 
   login = async (req, res, next) => {
+    const { phonenumber, password } = req.body;
+    if (!phonenumber || !password) {
+      throw new errResponse.BadRequestError(
+        "Missing input Login! Check and tryagain."
+      );
+    }
     new successResponse.OK({
       message: "Đăng nhập thành công",
       metadata: await AccessService.login(req.body),
