@@ -35,6 +35,8 @@
     - chưa check userId cho deleteComment
 
     - notification chưa handle noti_receiverId = userId, chưa full noti_type, có shopID, chưa lấy name shop
+
+    - chưa upload multi file image to server nodejs và cloudinary
 */
 
 /*
