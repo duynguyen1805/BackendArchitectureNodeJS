@@ -74,11 +74,12 @@ Welcome to the E-commerce Platform Backend API project! This project aims to bui
 
 - **Programming Language**: JavaScript (Node.js)
 - **Framework**: Express.js
-- **Database**: MongoDB
+- **Database**: MongoDB, Redis
 - **Authentication**: JWT (JSON Web Tokens), API Key
 <!-- - **API Documentation**: Swagger / OpenAPI -->
 - **Deployment**: Docker
-- **Testing**: Jest, Mocha
+- **Testing**: Jest
+- **Other**: RabbitMQ
 
 ## Getting Started
 
@@ -113,6 +114,17 @@ Welcome to the E-commerce Platform Backend API project! This project aims to bui
    URL_FONTEND=your_frontend_url
    JWT_SECRET=your_jwt_secret_key
    MONGO_URI=your_mongodb_connection_string
+   DEV_APP_PORT=4000
+   DEV_DB_PORT=27017
+   DEV_DB_HOST=localhost
+   DEV_DB_NAME=database_name
+
+   CHANNELID_DISCORD=your_ChannelId_DISCORD
+   TOKEN_DISCORD=your_Token_DISCORD
+
+   CLOUDINARY_NAME=your_CLOUDINARY_NAME
+   CLOUDINARY_API_SECRET_KEY=your_CLOUDINARY_API_SECRET_KEY
+   CLOUDINARY_API_KEY=your_CLOUDINARY_API_KEY
 
    ```
 
