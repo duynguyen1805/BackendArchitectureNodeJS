@@ -2,6 +2,7 @@
 
 // const { StatusCodes, ReasonPhrases } = require("../core/httpStatusCode");
 const Logger = require("../loggers/winston.log");
+const mainLogger = require("../loggers/main.log");
 
 // class ErrorResponse extends Error {
 //   constructor(message, status) {
@@ -39,9 +40,17 @@ class ErrorResponse extends Error {
   constructor(message, status) {
     super(message);
     this.status = status;
+    this.now = Date.now();
 
     // Ghi logs error use Winston
-    Logger.error(`${this.status} - ${this.message}`);
+    // Logger.error(`${this.status} - ${this.message}`);
+    // mainLogger.error(this.message, {
+    //   context: "/path",
+    //   // requestId: "uuidv4",
+    //   message: this.message,
+    //   metadata: {},
+    // });
+    // chuyển qua log error ở file app.js
   }
 }
 

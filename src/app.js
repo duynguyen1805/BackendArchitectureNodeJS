@@ -5,6 +5,8 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const { default: helmet } = require("helmet");
 const compression = require("compression");
+const mainLogger = require("./loggers/main.log");
+const { v4: uuidv4 } = require("uuid");
 
 // Load biến môi trường từ file .env
 dotenv.config();
@@ -78,6 +80,19 @@ app.use(
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// LOGGER - >>> file records all params request
+app.use((req, res, next) => {
+  const requestId = req.headers["x-request-id"];
+  req.requestId = requestId ? requestId : uuidv4();
+  mainLogger.log(`input params::${req.method}::`, [
+    req.path,
+    { requestId: req.requestId },
+    req.method === "POST" ? req.body : req.query,
+  ]);
+
+  next();
+});
+
 // INIT ROUTES
 app.use(require("./routes"));
 
@@ -90,6 +105,17 @@ app.use((req, res, next) => {
 
 app.use((error, req, res, next) => {
   const statusCode = error.status || 500;
+  const resMessage = `${error.status} - ${
+    Date.now() - error.now
+  }ms - Response: ${JSON.stringify(error)}`;
+
+  // LOG ERROR
+  mainLogger.error(resMessage, [
+    req.path,
+    { requestId: req.requestId },
+    { message: error.message },
+  ]);
+
   return res.status(statusCode).json({
     status: "error",
     code: statusCode,
