@@ -142,7 +142,7 @@ Welcome to the E-commerce Platform Backend API project! This project aims to bui
 ### Project Structure
 
 ```
-2handmarket_be/
+BackendArchitectureNodeJS/
 ├── config/db           # Config database mongodb connection
 ├── controllers/        # Route handlers
 ├── middlewares/        # Custom middleware
