@@ -33,6 +33,16 @@ class AccessController {
     }).send(res);
   };
 
+  signUpByEmail = async (req, res, next) => {
+    new successResponse.OK({
+      message: "Send verify email successfully",
+      metadata: await AccessService.signUpByEmail(req.body),
+    }).send(res);
+  };
+
+  // check user token via Email
+  checkRegisterEmailToken = (req, res, next) => {};
+
   login = async (req, res, next) => {
     const { phonenumber, password } = req.body;
     if (!phonenumber || !password) {

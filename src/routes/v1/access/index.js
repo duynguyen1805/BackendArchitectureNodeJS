@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const AccessController = require("../../../controllers/access.controller");
+const UserController = require("../../../controllers/user.controller");
 const { asyncHandler } = require("../../../helpers/asyncHandler");
 const {
   authentication,
@@ -17,6 +18,7 @@ const {
 // public routes
 router.post("/signup", asyncHandler(AccessController.signUp));
 router.post("/login", asyncHandler(AccessController.login));
+router.post("/signup/email", asyncHandler(AccessController.signUpByEmail));
 
 // authentication
 router.use(authentication_Ver2);

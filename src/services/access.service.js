@@ -17,6 +17,8 @@ const errResponse = require("../core/error.response");
 const KeyTokenService = require("./keyToken.service");
 const { findByPhonenumber } = require("../services/user.service");
 
+const { sendEmailToken } = require("./email.service");
+
 const check_exist_phonenumber = async (number) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -265,6 +267,26 @@ class AccessService {
         throw new errResponse.InternalServerError("Error Creating New User");
       }
     }
+  };
+
+  static signUpByEmail = async (data_body) => {
+    // { email = req.body.email, capcha = null }
+    const { email } = data_body;
+    // 1. check email exist in db
+    const user = await userSchema.findOne({ email }).lean();
+
+    // 2. if exists
+    if (user) {
+      throw new errResponse.BadRequestError({
+        message: "Email is already exists, go to login",
+      });
+    }
+
+    // 3. if not exists => send token via email user
+    sendEmailToken({ email: email });
+    return {
+      message: "Please check email to verify",
+    };
   };
 
   /* 
