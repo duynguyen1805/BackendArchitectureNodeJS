@@ -2,7 +2,7 @@
 require("dotenv").config();
 
 const htmlEmailToken = () => {
-  const verificationLink = `${process.env.URL_FRONTEND}/verify?token=${token}&email=${email}`;
+  //   const verificationLink = `${process.env.URL_FRONTEND}/verify?token=${token}&email=${email}`;
   return `
 <!DOCTYPE html>
 <html>
@@ -62,7 +62,7 @@ const htmlEmailToken = () => {
             <h1>Verify Your Email Address</h1>
             <p>Hello,</p>
             <p>Thank you for registering with our service. Please click the button below to verify your email address.</p>
-            <a href="${verificationLink}" class="button">Verify Email</a>
+            <a href="{{verificationLink}}" class="button">Verify Email</a>
         </div>
         <div class="footer">
             <p>If you did not request this email, please ignore it.</p>

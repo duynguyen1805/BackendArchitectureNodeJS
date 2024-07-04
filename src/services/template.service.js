@@ -2,7 +2,7 @@
 const templateSchema = require("../models/template.model");
 const { htmlEmailToken } = require("../utils/template.html");
 
-const newTemplate = async ({ temp_name, temp_html }) => {
+const newTemplate = async ({ temp_name = "HTML_EMAIL_VERIFY" }) => {
   const foundTemplate = await templateSchema.findOne({ temp_name });
   if (foundTemplate) {
     throw new Error("NAME Template already exists");

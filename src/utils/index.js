@@ -118,6 +118,16 @@ const convert_toObjectId_MongoDB = (string_id) => {
   return new Types.ObjectId(string_id);
 };
 
+// replate  placeholder templatehtml sendmail
+const replacePlaceholder = (template, params) => {
+  Object.keys(params).forEach((key) => {
+    const placeholder = `{{${key}}}`; // verify key
+    template = template.replace(new RegExp(placeholder, "g"), params[key]);
+  });
+
+  return template;
+};
+
 module.exports = {
   getInfoData,
   getSelectData,
@@ -126,4 +136,5 @@ module.exports = {
   updateNestedObjectParser,
   // removeUndefinedNullObject_ALLLevel_Nested_ObjectParse,
   convert_toObjectId_MongoDB,
+  replacePlaceholder,
 };

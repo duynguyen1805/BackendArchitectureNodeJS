@@ -23,4 +23,4 @@ const sendEmailNodeMailer = ({ to, subject, htmlContent }) => {
   return transporter.sendMail(mailOptions);
 };
 
-module.exports = { sendEmailNodeMailer };
+module.exports = { transporter, sendEmailNodeMailer };

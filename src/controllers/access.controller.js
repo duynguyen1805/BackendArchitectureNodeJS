@@ -41,7 +41,13 @@ class AccessController {
   };
 
   // check user token via Email
-  checkRegisterEmailToken = (req, res, next) => {};
+  checkRegisterEmailToken = async (req, res, next) => {
+    const { token = null, email } = req.query;
+    new successResponse.OK({
+      message: "Check register email token successfully",
+      metadata: await AccessService.checkRegisterEmailToken({ token, email }),
+    }).send(res);
+  };
 
   login = async (req, res, next) => {
     const { phonenumber, password } = req.body;

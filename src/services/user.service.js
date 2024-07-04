@@ -20,6 +20,11 @@ const findByPhonenumber = async ({
   return await userModel.findOne({ phonenumber }).select(select).lean();
 };
 
+const findUserByEmailWithLogin = async ({ email }) => {
+  return await userModel.findOne({ email }).lean();
+};
+
 module.exports = {
   findByPhonenumber,
+  findUserByEmailWithLogin,
 };

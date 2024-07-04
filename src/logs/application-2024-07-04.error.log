@@ -1,0 +1,8 @@
+[2024-07-04 01:14:30.735 PM]::error::/v1/api/email/create-template::39ec2dd1-d417-4b47-9736-5fef5b0158c1::undefined - NaNms - Response: {}::{"message":"verificationLink is not defined"}
+[2024-07-04 01:40:00.897 PM]::error::/v1/api/email/create-template::d7f78885-8c1d-4a33-a7f5-919b929ae53e::undefined - NaNms - Response: {}::{"message":"verificationLink is not defined"}
+[2024-07-04 05:09:39.094 PM]::error::/v1/api/email/verify::08f98f29-3596-4b56-b208-ac3ebf21b351::undefined - NaNms - Response: {}::{"message":"Cannot read properties of undefined (reading 'catch')"}
+[2024-07-04 05:09:39.201 PM]::error::/favicon.ico::20141b99-91d7-4203-bc0e-271a987eaa1b::404 - NaNms - Response: {"status":404}::{"message":"Not Found"}
+[2024-07-04 05:12:44.062 PM]::error::/v1/api/email/verify::1afdd943-1673-48c2-b45f-262eac16c060::undefined - NaNms - Response: {}::{"message":"Cannot read properties of undefined (reading 'catch')"}
+[2024-07-04 05:12:44.151 PM]::error::/favicon.ico::9b64be0b-aa77-4ba7-9001-58f8dd9d45ec::404 - NaNms - Response: {"status":404}::{"message":"Not Found"}
+[2024-07-04 05:12:58.025 PM]::error::/v1/api/email/verify::bfbdd5c2-25bf-4a9e-8e8e-e84b1524e04f::undefined - NaNms - Response: {}::{"message":"Cannot read properties of undefined (reading 'catch')"}
+[2024-07-04 05:17:39.931 PM]::error::/v1/api/email/verify::155854fb-eee9-4a30-9c97-dc69622d727d::500 - 0ms - Response: {"status":500,"now":1720088259930}::{"message":"Error: Email Token not found"}

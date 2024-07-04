@@ -15,9 +15,14 @@ const errResponse = require("../core/error.response");
 
 // SERVICE
 const KeyTokenService = require("./keyToken.service");
-const { findByPhonenumber } = require("../services/user.service");
+const {
+  findByPhonenumber,
+  findUserByEmailWithLogin,
+} = require("../services/user.service");
 
 const { sendEmailToken } = require("./email.service");
+
+const { foundEmailToken } = require("./otp.service");
 
 const check_exist_phonenumber = async (number) => {
   return new Promise(async (resolve, reject) => {
@@ -287,6 +292,79 @@ class AccessService {
     return {
       message: "Please check email to verify",
     };
+  };
+
+  static checkRegisterEmailToken = async (data_body) => {
+    const { token, email } = data_body;
+    try {
+      // check token exists
+      const { otp_email, otp_token } = await foundEmailToken({ token, email });
+      if (!otp_email || !otp_token) {
+        throw new errResponse.BadRequestError("Token not found");
+      }
+
+      // check email exists
+      const hasUser = await findUserByEmailWithLogin({ email });
+      if (hasUser) {
+        throw new errResponse.BadRequestError("Email already exists");
+      }
+
+      // process hashPassword
+      let data_signup = {
+        name: email,
+        phonenumber: email,
+        email: email,
+      };
+      let hashPasswordfromBcrypt = await hashUserPassword(email);
+      if (hashPasswordfromBcrypt && hashPasswordfromBcrypt.code == 0) {
+        data_signup.password = hashPasswordfromBcrypt.hashpwd;
+      } else {
+        throw new errResponse.InternalServerError("hash password error");
+      }
+      // create user
+      const newUser = await userSchema.create({
+        ...data_signup,
+        role: ROLE.USER,
+      });
+
+      if (newUser) {
+        // tạo privateKey và publicKey hệ thống vừa và nhỏ (ĐƠN GIẢN HƠN) ::V2
+        const privateKey = crypto.randomBytes(64).toString("hex");
+        const publicKey = crypto.randomBytes(64).toString("hex");
+
+        // publicKeyString ::V2
+        const keyStore = await KeyTokenService.createKeyToken({
+          userId: newUser._id,
+          publicKey: publicKey,
+          privateKey: privateKey,
+        });
+
+        if (!keyStore) {
+          throw new errResponse.InternalServerError("Error creating keyStore");
+        }
+        // console.log("check keyStore: ", keyStore);
+
+        const tokens = await createTokenPair(
+          { userId: newUser._id, phonenumber: newUser.phonenumber },
+          publicKey,
+          privateKey
+        );
+
+        return {
+          metadata: {
+            user: getInfoData({
+              fileds: ["_id", "name", "phonenumber"],
+              object: newUser,
+            }),
+            tokens: tokens,
+          },
+        };
+      } else {
+        throw new errResponse.InternalServerError("Error Check Register Email");
+      }
+    } catch (error) {
+      throw new errResponse.InternalServerError(error);
+    }
   };
 
   /* 

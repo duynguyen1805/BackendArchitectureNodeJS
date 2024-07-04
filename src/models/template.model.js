@@ -10,6 +10,7 @@ var templateSchema = new mongoose.Schema(
     temp_id: {
       type: Number,
       required: true,
+      default: 1,
     },
     temp_name: {
       // unique
