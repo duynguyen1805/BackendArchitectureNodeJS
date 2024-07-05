@@ -1,4 +1,5 @@
 "use strict";
+require("dotenv").config();
 // ES6
 const AccessService = require("../services/access.service");
 const successResponse = require("../core/success.response");
@@ -43,10 +44,24 @@ class AccessController {
   // check user token via Email
   checkRegisterEmailToken = async (req, res, next) => {
     const { token = null, email } = req.query;
-    new successResponse.OK({
-      message: "Check register email token successfully",
-      metadata: await AccessService.checkRegisterEmailToken({ token, email }),
-    }).send(res);
+    // new successResponse.OK({
+    //   message: "Check register email token successfully",
+    //   metadata: await AccessService.checkRegisterEmailToken({ token, email }),
+    // }).send(res);
+    const result = await AccessService.checkRegisterEmailToken({
+      token,
+      email,
+    });
+    if (result.success) {
+      const { user, tokens } = result.metadata;
+      return res.redirect(
+        `${process.env.URL_FRONTEND}/success?accessToken=${tokens.accessToken}&refreshToken=${tokens.refreshToken}`
+      );
+    } else {
+      return res.redirect(
+        `${process.env.URL_FRONTEND}/failed-verify-your-email`
+      );
+    }
   };
 
   login = async (req, res, next) => {
