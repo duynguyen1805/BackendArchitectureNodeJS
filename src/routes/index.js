@@ -14,6 +14,8 @@ router.use(pushToLogDiscord);
 // // check permission
 // router.use(checkPermissions_apiKey("0000"));
 
+router.use("/v1/api/rbac", require("./v1/rbac/index.js"));
+router.use("/v1/api/profile", require("./v1/profile/index.js"));
 router.use("/v1/api/email", require("./v1/email/index.js"));
 router.use("/v1/api/upload", require("./v1/upload/index.js"));
 router.use("/v1/api/notification", require("./v1/notification/index.js"));

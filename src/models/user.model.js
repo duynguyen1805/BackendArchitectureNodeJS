@@ -51,8 +51,27 @@ var userSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "inactive"],
+      enum: ["active", "inactive", "block"],
       default: "inactive",
+    },
+
+    // more
+    usr_id: {
+      type: Number,
+      require: false,
+    },
+    usr_salf: {
+      type: String,
+      require: false,
+    },
+    usr_slug: {
+      type: String,
+      require: false,
+    },
+    usr_role: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
+      require: false,
     },
   },
   {
