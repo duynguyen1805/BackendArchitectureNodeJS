@@ -16,11 +16,14 @@ const newSKU = async ({ spu_id, sku_list }) => {
 
     const newSKUs = await skuSchema.create(convert_sku_list);
     if (!newSKUs)
-      throw new errResponse.BadRequestError("new SKU", "new SKUs not found");
+      throw new errResponse.BadRequestError(
+        "func new SKU",
+        "new SKUs not found"
+      );
 
     return newSKUs;
   } catch (error) {
-    throw new errResponse.BadRequestError("new SKU", error);
+    throw new errResponse.BadRequestError("func new SKU", error);
   }
 };
 
@@ -36,7 +39,7 @@ const getOneSKU = async ({ sku_id, product_id }) => {
 
     return sku;
   } catch (error) {
-    throw new errResponse.BadRequestError("new OneSKU", error);
+    throw new errResponse.BadRequestError("func getOneSKU error", error);
   }
 };
 
