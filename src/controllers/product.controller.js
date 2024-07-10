@@ -1,10 +1,40 @@
 "use strict";
 
-const ProductService = require("../services/product.service");
 const ProductService_V2 = require("../services/product.service.v2");
 const SuccessResponse = require("../core/success.response");
+const { newSPU } = require("../services/spu.service");
+const { getOneSKU } = require("../services/sku.service");
 
 class ProductController {
+  /* SPU SKU */
+
+  createSPU = async (req, res, next) => {
+    try {
+      const spu = await newSPU({ ...req.body, product_shop: req.user.userId });
+
+      new SuccessResponse.OK({
+        message: "Create SPU Product successfully",
+        metadata: spu,
+      }).send(res);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  findOneSKU = async (req, res, next) => {
+    try {
+      const { sku_id, product_id } = req.query;
+      new SuccessResponse.OK({
+        message: "Get one SKU successfully",
+        metadata: await getOneSKU({ sku_id, product_id }),
+      }).send(res);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /* -------------------------------END SPU SKU------------------------------- */
+
   createProduct = async (req, res, next) => {
     const { product_type } = req.body;
 

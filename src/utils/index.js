@@ -128,6 +128,16 @@ const replacePlaceholder = (template, params) => {
   return template;
 };
 
+const customizeProductId = ({ product_shop }) => {
+  const ramdom = Math.floor(Math.random() * 899999 + 100000);
+  return `${ramdom}-${product_shop}`;
+};
+
+const ramdomID = ({ value_attach }) => {
+  const ramdom = Math.floor(Math.random() * 899999 + 100000);
+  return `${ramdom}-${value_attach}`;
+};
+
 module.exports = {
   getInfoData,
   getSelectData,
@@ -137,4 +147,6 @@ module.exports = {
   // removeUndefinedNullObject_ALLLevel_Nested_ObjectParse,
   convert_toObjectId_MongoDB,
   replacePlaceholder,
+  customizeProductId,
+  ramdomID,
 };

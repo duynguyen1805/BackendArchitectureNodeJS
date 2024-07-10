@@ -20,12 +20,15 @@ router.get(
 );
 router.post("/find_all", asyncHandler(ProductController.findAll_Products));
 router.get("/:product_id", asyncHandler(ProductController.find_DetailProduct));
+router.get("/sku/select-variation", asyncHandler(ProductController.findOneSKU));
 
 // ----------------------------authentication----------------------------
 router.use(authentication_Ver2);
 
 // route need authentication
 router.post("/create", asyncHandler(ProductController.createProduct));
+router.post("/spu/create", asyncHandler(ProductController.createSPU));
+
 router.patch("/:product_id", asyncHandler(ProductController.UpdateProduct));
 
 // QUERY

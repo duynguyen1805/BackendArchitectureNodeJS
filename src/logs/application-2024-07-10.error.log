@@ -1,0 +1,7 @@
+[2024-07-10 08:03:25.649 PM]::error::/v1/api/product/spu/create::a9e4b4cb-823e-4ec1-9910-53ae4eb47774::400 - 1ms - Response: {"status":400,"now":1720616605647}::{"message":"Error: new SKU"}
+[2024-07-10 08:07:01.588 PM]::error::/v1/api/product/spu/create::66011497-ca1e-4b1b-b740-cf25b6c02f60::400 - 0ms - Response: {"status":400,"now":1720616821587}::{"message":"Error: new SKU here"}
+[2024-07-10 08:11:37.061 PM]::error::/v1/api/product/spu/create::0da59a24-d85b-42f6-be67-eded0c0f7020::400 - 0ms - Response: {"status":400,"now":1720617097060}::{"message":"Error: new SKU here"}
+[2024-07-10 08:12:48.889 PM]::error::/v1/api/product/spu/create::10fbf5d0-bb2d-42b1-9202-b5d45bdce5e6::400 - 1ms - Response: {"status":400,"now":1720617168887}::{"message":"Error: new SKU here"}
+[2024-07-10 08:23:00.834 PM]::error::/v1/api/product/spu/create::25f17661-3802-4f70-acb3-07071d63c238::400 - 1ms - Response: {"status":400,"now":1720617780833}::{"message":"Error: new SKU here"}
+[2024-07-10 08:24:09.176 PM]::error::/v1/api/product/spu/create::603eb09d-bc5d-4f85-85bc-85c0c100ba0d::400 - 1ms - Response: {"status":400,"now":1720617849174}::{"message":"Error: new SKU here"}
+[2024-07-10 08:35:13.618 PM]::error::/v1/api/product/spu/create::21bca7e2-fb08-4335-8f03-ca571ff288f9::400 - 0ms - Response: {"status":400,"now":1720618513617}::{"message":"Error: new SKU here"}
