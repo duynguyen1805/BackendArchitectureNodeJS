@@ -4,6 +4,8 @@ const errResponse = require("../core/error.response");
 const skuSchema = require("../models/sku.model");
 const { ramdomID } = require("../utils/index");
 
+const _ = require("lodash");
+
 const newSKU = async ({ spu_id, sku_list }) => {
   try {
     const convert_sku_list = sku_list.map((sku) => {
@@ -31,13 +33,13 @@ const getOneSKU = async ({ sku_id, product_id }) => {
   try {
     // read cached ...
 
-    const sku = await skuSchema.findOne({ sku_id, product_id });
+    const sku = await skuSchema.findOne({ sku_id, product_id }).lean();
 
     if (sku) {
       // set cache ...
     }
 
-    return sku;
+    return _.omit(sku, ["_v", "updatedAt", "createdAt", "isDeleted"]);
   } catch (error) {
     throw new errResponse.BadRequestError("func getOneSKU error", error);
   }
